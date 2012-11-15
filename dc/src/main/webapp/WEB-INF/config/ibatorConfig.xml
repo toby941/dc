@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ibatorConfiguration PUBLIC "-//Apache Software Foundation//DTD Apache iBATIS Ibator Configuration 1.0//EN" "http://ibatis.apache.org/dtd/ibator-config_1_0.dtd" >
+<ibatorConfiguration>
+		<classPathEntry location="D:\Dropbox\Public\jar\mysql-connector-java-5.1.18.jar" />
+	<ibatorContext id="context1">
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://192.168.1.247:3306/dc"
+			userId="remote" password="123456" />
+		<javaModelGenerator targetPackage="com.dc.model" targetProject="dc" />
+		<sqlMapGenerator targetPackage="com.dc.model.mapping" targetProject="dc" />
+		<daoGenerator targetPackage="com.dc.dao" implementationPackage="com.dc.dao.impl"
+			targetProject="dc" type="SPRING" />
+    <table  tableName="DC" enableCountByExample="false" enableDeleteByExample="false"
+      enableSelectByExample="false" enableUpdateByExample="false">
+      <property name="ignoreQualifiersAtRuntime" value="true" />
+    </table>
+	</ibatorContext>
+</ibatorConfiguration>
