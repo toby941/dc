@@ -10,6 +10,7 @@
 			http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 			http://www.springframework.org/schema/aop
 			http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+			  <context:property-placeholder location="classpath:environment.properties" />
     <context:component-scan base-package="com.dc.service" />
    <!--  <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
@@ -26,4 +27,22 @@
         <aop:advisor pointcut="execution(* com.dc.service.*Service.*(..))" advice-ref="txAdvice" />
     </aop:config>
     -->
+      <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <props>
+                <prop key="resource.loader">file</prop>
+                <prop key="file.resource.loader.class"> org.apache.velocity.runtime.resource.loader.FileResourceLoader</prop>
+                <prop key="file.resource.loader.path">${dc.root}/WEB-INF/config/template</prop>
+                <prop key="file.resource.loader.cache">false</prop>
+                <prop key="input.encoding">utf-8</prop>
+                <prop key="output.encoding">utf-8</prop>
+            </props>
+        </property>
+    </bean>
+    
+    
+    <bean name="apiService" class="com.dc.service.ApiService" init-method="init">
+    <property name="clientSocketport" value="${clientSocketport}"></property>
+    <property name="writeFile" value="${writeFile}"></property>
+    </bean>
 </beans>
