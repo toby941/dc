@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Request action="Login">
+	<Param name="Username"></Param>
+	<Param name="Password"></Param>
+	<Param name="MacAddr"></Param>
+</Request>
