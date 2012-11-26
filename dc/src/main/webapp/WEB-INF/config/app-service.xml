@@ -42,7 +42,11 @@
     
     
     <bean name="apiService" class="com.dc.service.ApiService" init-method="init">
-    <property name="clientSocketport" value="${clientSocketport}"></property>
     <property name="writeFile" value="${writeFile}"></property>
+    <property name="readFile" value="${readFile}"></property>
+    <property name="clientSocketport" value="${clientSocketport}"></property>
+    <property name="resurceUpdateSocketPort" value="${resurceUpdateSocketPort}"></property>
+     <property name="updateFilePath" value="${updateFilePath}"></property>
+     <property name="updateFileNames" value="${updateFileNames}"></property>
     </bean>
 </beans>

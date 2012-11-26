@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -14,29 +16,37 @@ public class SocketClient {
     private static final Logger log = Logger.getLogger(SocketClient.class);
 
     public static Integer port;
+    // 定义每个数据报的最大大小为4K
+    private static final int DATA_LEN = 4096;
+    // 定义该服务器使用的DatagramSocket
+    private final DatagramSocket socket = null;
+    // 定义接收网络数据的字节数组
+    static byte[] inBuff = new byte[DATA_LEN];
+    // 以指定字节数组创建准备接受数据的DatagramPacket对象
+    private static final DatagramPacket inPacket = new DatagramPacket(inBuff, inBuff.length);
+    // 定义一个用于发送的DatagramPacket对象
+    private DatagramPacket outPacket;
 
     public static Boolean notice() throws IOException {
         try {
-            Socket server = new Socket(InetAddress.getLocalHost(), port);
-            server.setSoTimeout(10 * 1000);
-            BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream())); // 客户端建立输入流并进行封装
-            PrintWriter out = new PrintWriter(server.getOutputStream());
-            String str = null;
-            boolean handleDone = false;
-            while (true) {
-                if (str == null) {
-                    str = "done"; // 发送消息
-                    out.println(str); // 客户端向服务器发送信息
-                    out.flush();
-                }
-                String readStr = in.readLine();
-                if (readStr.equals("done")) {
-                    handleDone = true;
-                    break;
-                }
+            // 创建一个客户端DatagramSocket，使用随机端口
+            DatagramSocket socket = new DatagramSocket();
+            // 初始化发送用的DatagramSocket，它包含一个长度为0的字节数组
+            DatagramPacket outPacket = new DatagramPacket(new byte[0], 0, InetAddress.getLocalHost(), port);
+            byte[] buff = "done".getBytes();
+            // 设置发送用的DatagramPacket里的字节数据
+            outPacket.setData(buff);
+            // 发送数据报
+            socket.send(outPacket);
+            // 读取Socket中的数据，读到的数据放在inPacket所封装的字节数组里。
+            socket.receive(inPacket);
+            String result = new String(inBuff, 0, inPacket.getLength());
+            if ("done".equals(result)) {
+                return true;
             }
-            server.close();
-            return handleDone;
+            else {
+                return false;
+            }
         }
         catch (Exception e) {
             log.error("socket port:" + port, e);
