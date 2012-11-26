@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class UdpClient {
     // 定义发送数据报的目的地
-    public static final int DEST_PORT = 30000;
+    public static final int DEST_PORT = 5001;
     public static final String DEST_IP = "127.0.0.1";
     // 定义每个数据报的最大大小为4K
     private static final int DATA_LEN = 4096;
