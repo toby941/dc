@@ -87,6 +87,11 @@ public class RequestXml {
     private String sid;
     private List<Param> params;
 
+    /**
+     * 将params以key-value形式转化为map
+     * 
+     * @return
+     */
     public Map<String, String> getParamsAsMap() {
         Map<String, String> map = new HashMap<String, String>();
         if (params != null) {

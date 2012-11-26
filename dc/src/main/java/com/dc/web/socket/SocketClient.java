@@ -15,17 +15,32 @@ public class SocketClient {
 
     public static Integer port;
 
-    public static void notice() throws IOException {
+    public static Boolean notice() throws IOException {
         try {
             Socket server = new Socket(InetAddress.getLocalHost(), port);
+            server.setSoTimeout(10 * 1000);
+            BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream())); // 客户端建立输入流并进行封装
             PrintWriter out = new PrintWriter(server.getOutputStream());
-            String str = "done"; // 客户端读取（获得）键盘的字符串
-            out.println(str); // 客户端向服务器发送信息
-            out.flush();
+            String str = null;
+            boolean handleDone = false;
+            while (true) {
+                if (str == null) {
+                    str = "done"; // 发送消息
+                    out.println(str); // 客户端向服务器发送信息
+                    out.flush();
+                }
+                String readStr = in.readLine();
+                if (readStr.equals("done")) {
+                    handleDone = true;
+                    break;
+                }
+            }
             server.close();
+            return handleDone;
         }
         catch (Exception e) {
             log.error("socket port:" + port, e);
+            return false;
         }
     }
 
