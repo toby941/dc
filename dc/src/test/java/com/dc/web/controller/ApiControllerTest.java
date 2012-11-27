@@ -17,18 +17,20 @@ import org.junit.Test;
 
 public class ApiControllerTest {
 
-    @Test
-    public void test() throws ClientProtocolException, IOException {
-        String xml =
-                "<Request action=\"Login\"><Param name=\"Username\">sss</Param><Param name=\"Password\">spss</Param><Param name=\"MacAddr\"></Param></Request>";
+	@Test
+	public void test() throws ClientProtocolException, IOException {
+		String xml = "<Request action=\"Login\"><Param name=\"Username\">123</Param><Param name=\"Password\">123123</Param><Param name=\"MacAddr\"></Param></Request>";
 
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost("http://192.168.1.13:9091/api/ipad");
-        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("psentity", xml));
-        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-        HttpResponse response = httpclient.execute(httpPost);
-        System.err.println(EntityUtils.toString(response.getEntity()));
-    }
+		HttpClient httpclient = new DefaultHttpClient();
+		// HttpPost httpPost = new
+		// HttpPost("http://192.168.1.13:9091/api/ipad");
+		// http://zhaduir.vicp.cc:8092/
+		HttpPost httpPost = new HttpPost("http://zhaduir.vicp.cc:8092/api/ipad");
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("psentity", xml));
+		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+		HttpResponse response = httpclient.execute(httpPost);
+		System.err.println(EntityUtils.toString(response.getEntity()));
+	}
 
 }
