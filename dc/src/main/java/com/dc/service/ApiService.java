@@ -5,208 +5,268 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.jdom.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
+import com.dc.model.IpadRequestInfo;
 import com.dc.web.controller.RequestXml;
-import com.dc.web.controller.RequestXml.Param;
 import com.dc.web.socket.SocketClient;
 
 @Service
 public class ApiService {
 
-	// 转发ipad请求socket端口
-	private Integer clientSocketport;
-	// 响应文件
-	private String readFile;
-	// 写请求文件
-	private String writeFile;
-	// 监听文件更新socket端口
-	private Integer resurceUpdateSocketPort;
-	// 资源文件存放目录
-	private String updateFilePath;
-	// 资源文件名,多个文件以英文逗号分割
-	private String updateFileNames;
+    // 转发ipad请求socket端口
+    private Integer clientSocketport;
+    // 响应文件
+    private String readFile;
+    // 写请求文件
+    private String writeFile;
+    // 监听文件更新socket端口
+    private Integer resurceUpdateSocketPort;
+    // 资源文件存放目录
+    private String updateFilePath;
+    // 资源文件名,多个文件以英文逗号分割
+    private String updateFileNames;
 
-	private final String TX_Login_Request = "DL   008\r\n1234567890 ${Username} ${Password}";
-	private final String TX_Login_Res = "DL   008\r\n{status} ${info}";
+    private Boolean devMode;
 
-	@Autowired
-	private VelocityEngine velocityEngine;
+    private final String TX_Login_Request = "DL   008\r\n1234567890 ${Username} ${Password}";
+    private final String TX_Login_Res = "DL   008\r\n{status} ${info}";
 
-	public Integer getClientSocketport() {
-		return clientSocketport;
-	}
+    @Autowired
+    @Qualifier("ipadResponseVelocityEngine")
+    private VelocityEngine ipadResponseVelocityEngine;
 
-	public String getReadFile() {
-		return readFile;
-	}
+    @Autowired
+    @Qualifier("txRequstVelocityEngine")
+    private VelocityEngine txReRequestVelocityEngine;
 
-	public Integer getResurceUpdateSocketPort() {
-		return resurceUpdateSocketPort;
-	}
+    @Autowired
+    private RxResponseResolve rxResponseResolve;
 
-	public VelocityEngine getVelocityEngine() {
-		return velocityEngine;
-	}
+    public VelocityEngine getIpadResponseVelocityEngine() {
+        return ipadResponseVelocityEngine;
+    }
 
-	public String getWriteFile() {
-		return writeFile;
-	}
+    public void setIpadResponseVelocityEngine(VelocityEngine ipadResponseVelocityEngine) {
+        this.ipadResponseVelocityEngine = ipadResponseVelocityEngine;
+    }
 
-	public String handleRequest(String psentity) throws JDOMException,
-			IOException {
-		InputStream in = IOUtils.toInputStream(psentity);
-		RequestXml requestXml = new RequestXml(in);
-		IOUtils.closeQuietly(in);
-		String result = null;
-		String response = null;
-		Map<String, String> model = requestXml.getParamsAsMap();
-		if (requestXml.isLogin()) {
-			result = merge(TX_Login_Request, requestXml);
-			writeToFile(result);
-			boolean isLogin = SocketClient.notice();
-			if (isLogin) {
-				List<String> responseFile = readFile();
-				if (CollectionUtils.isNotEmpty(responseFile)
-						&& responseFile.size() >= 2) {
-					String status = responseFile.get(2).substring(0, 1);
-					if (!"1".equals(status)) {
-						model.put("errInfo", "用户错误");
-					} else {
-						model.put("errInfo", "");
-					}
-				}
-			}
-		}
-		response = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-				requestXml.getAction() + ".vm", model);
+    public VelocityEngine getTxReRequestVelocityEngine() {
+        return txReRequestVelocityEngine;
+    }
 
-		return response;
-	}
+    public void setTxReRequestVelocityEngine(VelocityEngine txReRequestVelocityEngine) {
+        this.txReRequestVelocityEngine = txReRequestVelocityEngine;
+    }
 
-	@PostConstruct
-	public void init() {
-		SocketClient.port = clientSocketport;
-		final Integer port4FileUpdate = resurceUpdateSocketPort;
-		try {
-			Thread t = new Thread() {
-				@Override
-				public void run() {
-					super.run();
-					try {
-						updateFileSocket(port4FileUpdate);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			};
-			t.start();
+    public Integer getClientSocketport() {
+        return clientSocketport;
+    }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    public String getReadFile() {
+        return readFile;
+    }
 
-	}
-	public String merge(final String txTemplete, RequestXml requestXml) {
-		List<RequestXml.Param> params = requestXml.getParams();
-		String result = txTemplete;
-		for (Param param : params) {
-			String name = param.getName();
-			String value = param.getValue();
-			result = result.replace("${" + name + "}", value);
-		}
-		return result;
-	}
+    public Integer getResurceUpdateSocketPort() {
+        return resurceUpdateSocketPort;
+    }
 
-	public List<String> readFile() throws IOException {
-		return FileUtils.readLines(new File(readFile), "UTF-8");
-	}
+    public VelocityEngine getVelocityEngine() {
+        return ipadResponseVelocityEngine;
+    }
 
-	public void setClientSocketport(Integer clientSocketport) {
-		this.clientSocketport = clientSocketport;
-	}
+    public String getWriteFile() {
+        return writeFile;
+    }
 
-	public void setReadFile(String readFile) {
-		this.readFile = readFile;
-	}
+    public String handleRequest(String psentity) throws JDOMException, IOException {
+        InputStream in = IOUtils.toInputStream(psentity);
+        RequestXml requestXml = new RequestXml(in);
+        IOUtils.closeQuietly(in);
+        String result = null;
+        String response = null;
+        IpadRequestInfo requestInfo = getTxRequest(requestXml);
+        String txRequestContent = merge4TxRequest(requestInfo, requestXml);
+        writeToFile(txRequestContent);
+        Map<String, Object> model = new HashMap<String, Object>();
+        if (devMode || SocketClient.notice()) {
+            model.put("ipad", requestInfo);
+            List<String> responseFile = readFile();
+            if (requestXml.isLogin()) {
+                if (!rxResponseResolve.resolveLogin(responseFile)) {
+                    model = rxResponseResolve.putErrorMsg(model, "登陆失败");
+                }
+            }
+            else if (requestXml.isOpenTable()) {
 
-	public void setResurceUpdateSocketPort(Integer resurceUpdateSocketPort) {
-		this.resurceUpdateSocketPort = resurceUpdateSocketPort;
-	}
+            }
+        }
+        response =
+                VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine,
+                        requestXml.getIpadResponseAction() + ".vm", model);
+        return response;
+    }
 
-	public void setVelocityEngine(VelocityEngine velocityEngine) {
-		this.velocityEngine = velocityEngine;
-	}
+    public Boolean getDevMode() {
+        return devMode;
+    }
 
-	public void setWriteFile(String writeFile) {
-		this.writeFile = writeFile;
-	}
+    public void setDevMode(Boolean devMode) {
+        this.devMode = devMode;
+    }
 
-	public void updateFile() throws IOException {
-		String[] fileNames = updateFileNames.split(",");
-		for (String fileName : fileNames) {
-			File f = new File(updateFilePath + fileName);
-			if (f.exists()) {
-				String content = FileUtils.readFileToString(f);
-				System.out.println(content);
-			}
-		}
+    @PostConstruct
+    public void init() {
+        SocketClient.port = clientSocketport;
+        final Integer port4FileUpdate = resurceUpdateSocketPort;
+        try {
+            Thread t = new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    try {
+                        updateFileSocket(port4FileUpdate);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            t.start();
 
-	}
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	public String getUpdateFilePath() {
-		return updateFilePath;
-	}
+    }
 
-	public void setUpdateFilePath(String updateFilePath) {
-		this.updateFilePath = updateFilePath;
-	}
+    /**
+     * @param requestXml
+     * @return
+     */
+    public IpadRequestInfo getTxRequest(RequestXml requestXml) {
+        String sid = requestXml.getSid();
+        IpadRequestInfo requestInfo = null;
+        if (StringUtils.isNotBlank(sid)) {
+            requestInfo = CacheService.getIpadInfo(sid);
+        }
+        else {
+            requestInfo = new IpadRequestInfo(requestXml);
+            CacheService.putIpadRequestInfo(requestInfo.getSid(), requestInfo);
+        }
+        return requestInfo;
+    }
 
-	public String getUpdateFileNames() {
-		return updateFileNames;
-	}
+    /**
+     * 拼装TX请求
+     * 
+     * @param requestInfo
+     * @param requestXml
+     * @return
+     */
+    public String merge4TxRequest(IpadRequestInfo requestInfo, RequestXml requestXml) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("ipad", requestInfo);
+        String txRrequestContent =
+                VelocityEngineUtils.mergeTemplateIntoString(txReRequestVelocityEngine, requestXml.getAction() + ".vm",
+                        model);
+        return txRrequestContent;
+    }
 
-	public void setUpdateFileNames(String updateFileNames) {
-		this.updateFileNames = updateFileNames;
-	}
+    public List<String> readFile() throws IOException {
+        File file = new File(readFile);
+        if (file.exists()) {
+            return FileUtils.readLines(file, "UTF-8");
+        }
+        return null;
+    }
 
-	public void updateFileSocket(Integer port) throws IOException {
-		if (port == null) {
-			port = resurceUpdateSocketPort;
-		}
-		DatagramSocket socket = new DatagramSocket(port);
-		// socket.setSoTimeout(5 * 1000);
-		byte[] buff = new byte[4096];
-		DatagramPacket inPacket = new DatagramPacket(buff, 4096);
-		while (true) {
-			socket.receive(inPacket);
-			String revice = new String(buff, 0, inPacket.getLength());
-			System.out.println("revice data：" + revice);
-			File f = new File("/tmp/r1.txt");
-			FileUtils.writeStringToFile(f, revice);
-			if ("done".equals(revice)) {
-				updateFile();
-			}
-		}
-	}
+    public void setClientSocketport(Integer clientSocketport) {
+        this.clientSocketport = clientSocketport;
+    }
 
-	public void writeToFile(String content) throws IOException {
-		File f = new File(writeFile);
-		if (f.exists()) {
-			FileUtils.forceDelete(f);
-		}
-		FileUtils.writeStringToFile(f, content, "UTF-8");
-	}
+    public void setReadFile(String readFile) {
+        this.readFile = readFile;
+    }
+
+    public void setResurceUpdateSocketPort(Integer resurceUpdateSocketPort) {
+        this.resurceUpdateSocketPort = resurceUpdateSocketPort;
+    }
+
+    public void setVelocityEngine(VelocityEngine velocityEngine) {
+        this.ipadResponseVelocityEngine = velocityEngine;
+    }
+
+    public void setWriteFile(String writeFile) {
+        this.writeFile = writeFile;
+    }
+
+    public void updateFile() throws IOException {
+        String[] fileNames = updateFileNames.split(",");
+        for (String fileName : fileNames) {
+            File f = new File(updateFilePath + fileName);
+            if (f.exists()) {
+                String content = FileUtils.readFileToString(f);
+                System.out.println(content);
+            }
+        }
+
+    }
+
+    public String getUpdateFilePath() {
+        return updateFilePath;
+    }
+
+    public void setUpdateFilePath(String updateFilePath) {
+        this.updateFilePath = updateFilePath;
+    }
+
+    public String getUpdateFileNames() {
+        return updateFileNames;
+    }
+
+    public void setUpdateFileNames(String updateFileNames) {
+        this.updateFileNames = updateFileNames;
+    }
+
+    public void updateFileSocket(Integer port) throws IOException {
+        if (port == null) {
+            port = resurceUpdateSocketPort;
+        }
+        DatagramSocket socket = new DatagramSocket(port);
+        // socket.setSoTimeout(5 * 1000);
+        byte[] buff = new byte[4096];
+        DatagramPacket inPacket = new DatagramPacket(buff, 4096);
+        while (true) {
+            socket.receive(inPacket);
+            String revice = new String(buff, 0, inPacket.getLength());
+            System.out.println("revice data：" + revice);
+            if ("done".equals(revice)) {
+                updateFile();
+            }
+        }
+    }
+
+    public void writeToFile(String content) throws IOException {
+        File f = new File(writeFile);
+        if (f.exists()) {
+            FileUtils.forceDelete(f);
+        }
+        FileUtils.writeStringToFile(f, content, "UTF-8");
+    }
 }

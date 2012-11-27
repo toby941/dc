@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -17,20 +18,31 @@ import org.junit.Test;
 
 public class ApiControllerTest {
 
-	@Test
-	public void test() throws ClientProtocolException, IOException {
-		String xml = "<Request action=\"Login\"><Param name=\"Username\">123</Param><Param name=\"Password\">123123</Param><Param name=\"MacAddr\"></Param></Request>";
+    private static String host = "http://192.168.1.13:9091";
 
-		HttpClient httpclient = new DefaultHttpClient();
-		// HttpPost httpPost = new
-		// HttpPost("http://192.168.1.13:9091/api/ipad");
-		// http://zhaduir.vicp.cc:8092/
-		HttpPost httpPost = new HttpPost("http://zhaduir.vicp.cc:8092/api/ipad");
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		nameValuePairs.add(new BasicNameValuePair("psentity", xml));
-		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-		HttpResponse response = httpclient.execute(httpPost);
-		System.err.println(EntityUtils.toString(response.getEntity()));
-	}
+    // private static String host="http://zhaduir.vicp.cc:8092";
 
+    public void request(String xml) throws ParseException, IOException {
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(host + "/api/ipad");
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("psentity", xml));
+        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+        HttpResponse response = httpclient.execute(httpPost);
+        System.err.println(EntityUtils.toString(response.getEntity()));
+    }
+
+    // @Test
+    public void testLogin() throws ClientProtocolException, IOException {
+        String xml =
+                "<Request action=\"Login\"><Param name=\"Username\">一点红</Param><Param name=\"Password\">123123</Param><Param name=\"MacAddr\"></Param></Request>";
+        request(xml);
+    }
+
+    @Test
+    public void testOpenTable() throws ParseException, IOException {
+        String xml =
+                "<Request action=\"OpenTable\" sid=\"997582243409166\"><Param name=\"TableId\">234</Param></Request>";
+        request(xml);
+    }
 }

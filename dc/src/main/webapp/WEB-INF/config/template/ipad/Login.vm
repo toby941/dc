@@ -1,0 +1,6 @@
+<LogInfo errInfo="$!errInfo">
+  <Username>${ipad.userName}</Username>
+  <IsAdmin>1</IsAdmin>
+  <SessionId>${ipad.sid}</SessionId>
+  <TableId>$!ipad.tableId</TableId>
+</LogInfo>

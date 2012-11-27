@@ -30,6 +30,40 @@ public class RequestXml {
         return Constants.REQUEST_LOGIN.equals(action);
     }
 
+    public boolean isOpenTable() {
+        return Constants.REQUEST_OpenTable.equals(action);
+    }
+
+    public boolean isNormalAction() {
+        return Constants.REQUEST_Logout.equals(action) || Constants.REQUEST_OpenTable.equals(action)
+                || Constants.REQUEST_CloseTable.equals(action) || Constants.REQUEST_OrderMenu.equals(action)
+                || Constants.REQUEST_UrgeCate.equals(action) || Constants.REQUEST_DelayCate.equals(action)
+                || Constants.REQUEST_Checkout.equals(action);
+    }
+
+    /**
+     * 是否 获取餐桌信息 请求
+     * 
+     * @return
+     */
+    public boolean isGetTables() {
+        return Constants.REQUEST_GetTables.equals(action);
+    }
+
+    /**
+     * 过滤响应内容一样的action
+     * 
+     * @return
+     */
+    public String getIpadResponseAction() {
+        if (isNormalAction()) {
+            return "OK";
+        }
+        else {
+            return action;
+        }
+    }
+
     public String getAction() {
         return action;
     }
@@ -102,6 +136,24 @@ public class RequestXml {
             }
         }
         return map;
+    }
+
+    /**
+     * 获取paramName 对应的 param value值
+     * 
+     * @param paramName
+     * @return
+     */
+    public String getParamValue(String paramName) {
+        if (params != null) {
+            for (Param param : params) {
+                String name = param.getName();
+                if (name.equals(paramName)) {
+                    return param.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     public class Param {

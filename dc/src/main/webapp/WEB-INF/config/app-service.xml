@@ -27,18 +27,32 @@
         <aop:advisor pointcut="execution(* com.dc.service.*Service.*(..))" advice-ref="txAdvice" />
     </aop:config>
     -->
-      <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+      <bean id="ipadResponseVelocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
         <property name="velocityProperties">
             <props>
                 <prop key="resource.loader">file</prop>
                 <prop key="file.resource.loader.class"> org.apache.velocity.runtime.resource.loader.FileResourceLoader</prop>
-                <prop key="file.resource.loader.path">${dc.root}/WEB-INF/config/template</prop>
+                <prop key="file.resource.loader.path">${dc.root}/WEB-INF/config/template/ipad</prop>
                 <prop key="file.resource.loader.cache">false</prop>
                 <prop key="input.encoding">utf-8</prop>
                 <prop key="output.encoding">utf-8</prop>
             </props>
         </property>
     </bean>
+    
+    <bean id="txRequstVelocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <props>
+                <prop key="resource.loader">file</prop>
+                <prop key="file.resource.loader.class"> org.apache.velocity.runtime.resource.loader.FileResourceLoader</prop>
+                <prop key="file.resource.loader.path">${dc.root}/WEB-INF/config/template/tx</prop>
+                <prop key="file.resource.loader.cache">false</prop>
+                <prop key="input.encoding">utf-8</prop>
+                <prop key="output.encoding">utf-8</prop>
+            </props>
+        </property>
+    </bean>
+    
     
     
     <bean name="apiService" class="com.dc.service.ApiService" init-method="init">
@@ -48,5 +62,6 @@
     <property name="resurceUpdateSocketPort" value="${resurceUpdateSocketPort}"></property>
      <property name="updateFilePath" value="${updateFilePath}"></property>
      <property name="updateFileNames" value="${updateFileNames}"></property>
+     <property name="devMode" value="${devMode}"></property>
     </bean>
 </beans>

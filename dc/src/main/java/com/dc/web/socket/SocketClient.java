@@ -31,16 +31,19 @@ public class SocketClient {
         try {
             // 创建一个客户端DatagramSocket，使用随机端口
             DatagramSocket socket = new DatagramSocket();
+            socket.setSoTimeout(10 * 1000);
             // 初始化发送用的DatagramSocket，它包含一个长度为0的字节数组
             DatagramPacket outPacket = new DatagramPacket(new byte[0], 0, InetAddress.getLocalHost(), port);
             byte[] buff = "done".getBytes();
             // 设置发送用的DatagramPacket里的字节数据
             outPacket.setData(buff);
             // 发送数据报
+            System.out.println("send notice done port: " + port);
             socket.send(outPacket);
             // 读取Socket中的数据，读到的数据放在inPacket所封装的字节数组里。
             socket.receive(inPacket);
             String result = new String(inBuff, 0, inPacket.getLength());
+            System.out.println("receive data : " + result);
             if ("done".equals(result)) {
                 return true;
             }

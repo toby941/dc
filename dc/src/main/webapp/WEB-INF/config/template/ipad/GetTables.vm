@@ -1,0 +1,5 @@
+<TableInfo size="" errInfo="">
+#foreach( $table in $tableList )
+  <Table id="$table.id" caps="$table.caps" type="$table.type" status="$table.status" time="$table.time" booker="$table.booker" tel="$table.tel"/>
+#end
+</TableInfo>

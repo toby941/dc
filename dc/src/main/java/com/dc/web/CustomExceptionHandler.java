@@ -23,6 +23,7 @@ public class CustomExceptionHandler extends SimpleMappingExceptionResolver {
     protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
             Exception ex) {
         LOG.error("handle error" + getRequestInfo(request, handler), ex);
+        ex.printStackTrace();
         request.setAttribute("e", ex);
         ModelAndView modelAndView = null;
         modelAndView = new ModelAndView("forward:/errorDocs/404.jsp");

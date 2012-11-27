@@ -1,6 +1,0 @@
-<LogInfo errInfo="${errInfo}">
-  <Username>${Username}</Username>
-  <IsAdmin>1</IsAdmin>
-  <SessionId>${SessionId}</SessionId>
-  <TableId>008</TableId>
-</LogInfo>

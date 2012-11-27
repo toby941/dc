@@ -1,0 +1,14 @@
+<TabInfo size="" errInfo="">
+  <TabNode>
+    <Tab id=""> </Tab>
+    <MenuInfo size="" errInfo="">
+      <Menu id="" rate="" price="" qty="" pqty="" rebate="" status="">
+        <Name></Name>
+        <Desc></Desc>
+        <File type="" format="" size="" src="" synctime=""></File>
+      </Menu> 
+……
+    </MenuInfo>
+  </TabNode>
+……
+<TabInfo>
