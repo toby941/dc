@@ -97,7 +97,6 @@ public class ApiService {
         InputStream in = IOUtils.toInputStream(psentity);
         RequestXml requestXml = new RequestXml(in);
         IOUtils.closeQuietly(in);
-        String result = null;
         String response = null;
         IpadRequestInfo requestInfo = getTxRequest(requestXml);
         String txRequestContent = merge4TxRequest(requestInfo, requestXml);
@@ -106,14 +105,7 @@ public class ApiService {
         if (devMode || SocketClient.notice()) {
             model.put("ipad", requestInfo);
             List<String> responseFile = readFile();
-            if (requestXml.isLogin()) {
-                if (!rxResponseResolve.resolveLogin(responseFile)) {
-                    model = rxResponseResolve.putErrorMsg(model, "登陆失败");
-                }
-            }
-            else if (requestXml.isOpenTable()) {
-
-            }
+            model = rxResponseResolve.resolve(responseFile, model, "操作失败", requestXml);
         }
         response =
                 VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine,

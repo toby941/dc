@@ -6,8 +6,35 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import com.dc.web.controller.RequestXml;
+
 @Service
 public class RxResponseResolve {
+
+    /**
+     * 解析RX入口
+     * 
+     * @param responseFile
+     * @param model
+     * @param errorTip
+     * @param requestXml
+     * @return
+     */
+    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip,
+            RequestXml requestXml) {
+        boolean resolveResult = false;
+        if (requestXml.isLogin()) {
+            resolveResult = resolveLogin(responseFile);
+        }
+        else if (requestXml.isOpenTable()) {
+            resolveResult = resolveOpenTable(responseFile);
+        }
+
+        if (!resolveResult) {
+            model = putErrorMsg(model, errorTip);
+        }
+        return model;
+    }
 
     public Map<String, Object> putErrorMsg(Map<String, Object> model, String errorTip) {
         model.put("errInfo", errorTip);
