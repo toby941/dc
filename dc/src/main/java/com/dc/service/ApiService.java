@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +42,8 @@ public class ApiService {
     // 资源文件名,多个文件以英文逗号分割
     private String updateFileNames;
 
+    // 测试模式 开启 便于在没有socket模式下进行文件读写测试
     private Boolean devMode;
-
-    private final String TX_Login_Request = "DL   008\r\n1234567890 ${Username} ${Password}";
-    private final String TX_Login_Res = "DL   008\r\n{status} ${info}";
 
     @Autowired
     @Qualifier("ipadResponseVelocityEngine")
@@ -93,6 +92,15 @@ public class ApiService {
         return writeFile;
     }
 
+    /**
+     * 请求处理入口 根据不同的actioin分发
+     * 
+     * @param psentity
+     * @return
+     * @throws JDOMException
+     * @throws IOException
+     * @throws SQLException
+     */
     public String handleRequest(String psentity) throws JDOMException, IOException {
         InputStream in = IOUtils.toInputStream(psentity);
         RequestXml requestXml = new RequestXml(in);
@@ -148,6 +156,8 @@ public class ApiService {
     }
 
     /**
+     * 将requestXml转化为IpadRequestInfo 输出
+     * 
      * @param requestXml
      * @return
      */

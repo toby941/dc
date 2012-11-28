@@ -12,6 +12,12 @@ public class IpadRequestInfo extends BaseModel {
     private String password;
     private String sid;
 
+    public IpadRequestInfo(String tableId, String caps) {
+        super();
+        this.tableId = tableId;
+        this.caps = caps;
+    }
+
     public String getUserName() {
         return userName;
     }

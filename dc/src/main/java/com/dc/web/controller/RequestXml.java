@@ -34,11 +34,12 @@ public class RequestXml {
         return Constants.REQUEST_OpenTable.equals(action);
     }
 
-    public boolean isNormalAction() {
-        return Constants.REQUEST_Logout.equals(action) || Constants.REQUEST_OpenTable.equals(action)
-                || Constants.REQUEST_CloseTable.equals(action) || Constants.REQUEST_OrderMenu.equals(action)
-                || Constants.REQUEST_UrgeCate.equals(action) || Constants.REQUEST_DelayCate.equals(action)
-                || Constants.REQUEST_Checkout.equals(action);
+    public boolean isCloseTable() {
+        return Constants.REQUEST_CloseTable.equals(action);
+    }
+
+    public boolean isGetMenuList() {
+        return Constants.REQUEST_GetMenuList.equals(action);
     }
 
     /**
@@ -48,6 +49,13 @@ public class RequestXml {
      */
     public boolean isGetTables() {
         return Constants.REQUEST_GetTables.equals(action);
+    }
+
+    public boolean isNormalAction() {
+        return Constants.REQUEST_Logout.equals(action) || Constants.REQUEST_OpenTable.equals(action)
+                || Constants.REQUEST_CloseTable.equals(action) || Constants.REQUEST_OrderMenu.equals(action)
+                || Constants.REQUEST_UrgeCate.equals(action) || Constants.REQUEST_DelayCate.equals(action)
+                || Constants.REQUEST_Checkout.equals(action);
     }
 
     /**
@@ -191,4 +199,5 @@ public class RequestXml {
             this.value = value;
         }
     }
+
 }
