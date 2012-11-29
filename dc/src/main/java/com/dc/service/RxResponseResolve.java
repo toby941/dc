@@ -1,6 +1,7 @@
 package com.dc.service;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,17 +28,25 @@ public class RxResponseResolve {
     public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip,
             RequestXml requestXml) {
         boolean resolveResult = false;
-
+        List<IpadRequestInfo> resolveList = new ArrayList<IpadRequestInfo>();
         Class c = this.getClass();
         Method[] ms = c.getDeclaredMethods();
         for (Method method : ms) {
             if (method.getName().contains(requestXml.getAction())) {
-                resolveResult = (boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
+                Type t = method.getGenericReturnType();
+                if ("java.util.List<com.dc.model.IpadRequestInfo>".equals(t.toString())) {
+                    resolveList = (List<IpadRequestInfo>) ReflectionUtils.invokeMethod(method, this, responseFile);
+                }
+                else {
+                    resolveResult = (boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
+                }
                 break;
             }
         }
 
-        if (!resolveResult) {
+        model.put("ipadList", resolveList);
+        model.put("size", resolveList.size());
+        if (!resolveResult && resolveList.size() == 0) {
             model = putErrorMsg(model, errorTip);
         }
         return model;
@@ -77,25 +86,21 @@ public class RxResponseResolve {
         return false;
     }
 
-    public boolean resolveGetTables(List<String> responseFile) {
+    public List<IpadRequestInfo> resolveGetTables(List<String> responseFile) {
+        List<IpadRequestInfo> list = new ArrayList<IpadRequestInfo>();
         if (CollectionUtils.isNotEmpty(responseFile) && responseFile.size() >= 2) {
             if (responseFile.get(1).startsWith("查询空闲成功")) {
-
-                List<IpadRequestInfo> list = new ArrayList<IpadRequestInfo>();
                 for (int i = 2; i < responseFile.size(); i++) {
                     String responseStr = responseFile.get(i);
-                    String[] info = responseStr.split(" ");
+                    String[] info = responseStr.split("\\s+");
                     if (info.length == 3) {
                         IpadRequestInfo requestInfo = new IpadRequestInfo(info[1], info[2]);
                         list.add(requestInfo);
                     }
                 }
-
-                return true;
             }
-
         }
-        return false;
+        return list;
     }
 
     /**

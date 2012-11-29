@@ -14,6 +14,7 @@
 <h1>您访问的信息已失效。</h1>
 <p>您现在可以：</p>
 <ul>
+ <c:out value="${e}"/>
   <li><a href="/">网站首页。</a></li>
   <li><a href="javacsript:history.go(-1);">返回</a></li>
 </ul>

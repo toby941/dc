@@ -32,10 +32,10 @@ public class ApiControllerTest {
         System.err.println(EntityUtils.toString(response.getEntity()));
     }
 
-    @Test
+    // @Test
     public void testLogin() throws ClientProtocolException, IOException {
         String xml =
-                "<Request action=\"Login\"><Param name=\"Username\">一点红</Param><Param name=\"Password\">123123</Param><Param name=\"MacAddr\"></Param></Request>";
+                "<Request action=\"Login\"><Param name=\"Username\">Ss</Param><Param name=\"Password\">123123</Param><Param name=\"MacAddr\"></Param></Request>";
         request(xml);
     }
 
@@ -43,6 +43,12 @@ public class ApiControllerTest {
     public void testOpenTable() throws ParseException, IOException {
         String xml =
                 "<Request action=\"OpenTable\" sid=\"997582243409166\"><Param name=\"TableId\">234</Param></Request>";
+        request(xml);
+    }
+
+    @Test
+    public void testGetTables() throws ParseException, IOException {
+        String xml = "<Request action=\"GetTables\" sid=\"1180325769756761\"/>";
         request(xml);
     }
 }

@@ -193,7 +193,7 @@ public class ApiService {
     public List<String> readFile() throws IOException {
         File file = new File(readFile);
         if (file.exists()) {
-            return FileUtils.readLines(file, "UTF-8");
+            return FileUtils.readLines(file, "GBK");
         }
         return null;
     }

@@ -1,5 +1,7 @@
 package com.dc.model;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.dc.web.controller.RequestXml;
 
 public class IpadRequestInfo extends BaseModel {
@@ -12,6 +14,53 @@ public class IpadRequestInfo extends BaseModel {
     private String password;
     private String sid;
 
+    private String type;
+    private String status;
+    private String time;
+    private String booker;
+
+    public String getType() {
+        return StringUtils.trimToEmpty(type);
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getStatus() {
+        return StringUtils.trimToEmpty(status);
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTime() {
+        return StringUtils.trimToEmpty(time);
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getBooker() {
+        return StringUtils.trimToEmpty(booker);
+    }
+
+    public void setBooker(String booker) {
+        this.booker = booker;
+    }
+
+    public String getTel() {
+        return StringUtils.trimToEmpty(tel);
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    private String tel;
+
     public IpadRequestInfo(String tableId, String caps) {
         super();
         this.tableId = tableId;
@@ -19,7 +68,7 @@ public class IpadRequestInfo extends BaseModel {
     }
 
     public String getUserName() {
-        return userName;
+        return StringUtils.trimToEmpty(userName);
     }
 
     public void setUserName(String userName) {
@@ -61,7 +110,7 @@ public class IpadRequestInfo extends BaseModel {
     }
 
     public String getPassword() {
-        return password;
+        return StringUtils.trimToEmpty(password);
     }
 
     public void setPassword(String password) {
@@ -70,7 +119,7 @@ public class IpadRequestInfo extends BaseModel {
 
     @Override
     public String getSid() {
-        return sid;
+        return StringUtils.trimToEmpty(sid);
     }
 
     @Override
