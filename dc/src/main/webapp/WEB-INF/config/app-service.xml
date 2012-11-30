@@ -63,5 +63,6 @@
      <property name="updateFilePath" value="${updateFilePath}"></property>
      <property name="updateFileNames" value="${updateFileNames}"></property>
      <property name="devMode" value="${devMode}"></property>
+     <property name="menuFilePath" value="${menuFilePath}"></property>
     </bean>
 </beans>

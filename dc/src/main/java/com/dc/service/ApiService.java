@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.dc.model.IpadRequestInfo;
+import com.dc.utils.PathUtils;
 import com.dc.web.controller.RequestXml;
 import com.dc.web.socket.SocketClient;
 
@@ -41,6 +42,24 @@ public class ApiService {
     private String updateFilePath;
     // 资源文件名,多个文件以英文逗号分割
     private String updateFileNames;
+
+    public String getMenuFilePath() {
+        return menuFilePath;
+    }
+
+    public void setMenuFilePath(String menuFilePath) {
+        this.menuFilePath = menuFilePath;
+    }
+
+    public RxResponseResolve getRxResponseResolve() {
+        return rxResponseResolve;
+    }
+
+    public void setRxResponseResolve(RxResponseResolve rxResponseResolve) {
+        this.rxResponseResolve = rxResponseResolve;
+    }
+
+    private String menuFilePath;
 
     // 测试模式 开启 便于在没有socket模式下进行文件读写测试
     private Boolean devMode;
@@ -115,7 +134,9 @@ public class ApiService {
             List<String> responseFile = readFile();
             model = rxResponseResolve.resolve(responseFile, model, "操作失败", requestXml);
         }
-        response = VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine, requestXml.getIpadResponseAction() + ".vm", model);
+        response =
+                VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine,
+                        requestXml.getIpadResponseAction() + ".vm", model);
         return response;
     }
 
@@ -130,6 +151,7 @@ public class ApiService {
     @PostConstruct
     public void init() {
         SocketClient.port = clientSocketport;
+        PathUtils.menuFilePath = this.menuFilePath;
         final Integer port4FileUpdate = resurceUpdateSocketPort;
         try {
             Thread t = new Thread() {
@@ -138,14 +160,16 @@ public class ApiService {
                     super.run();
                     try {
                         updateFileSocket(port4FileUpdate);
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             };
             t.start();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -162,7 +186,8 @@ public class ApiService {
         IpadRequestInfo requestInfo = null;
         if (StringUtils.isNotBlank(sid)) {
             requestInfo = CacheService.getIpadInfo(sid);
-        } else {
+        }
+        else {
             requestInfo = new IpadRequestInfo(requestXml);
             CacheService.putIpadRequestInfo(requestInfo.getSid(), requestInfo);
         }
@@ -179,7 +204,9 @@ public class ApiService {
     public String merge4TxRequest(IpadRequestInfo requestInfo, RequestXml requestXml) {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("ipad", requestInfo);
-        String txRrequestContent = VelocityEngineUtils.mergeTemplateIntoString(txReRequestVelocityEngine, requestXml.getAction() + ".vm", model);
+        String txRrequestContent =
+                VelocityEngineUtils.mergeTemplateIntoString(txReRequestVelocityEngine, requestXml.getAction() + ".vm",
+                        model);
         return txRrequestContent;
     }
 

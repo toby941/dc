@@ -1,5 +1,7 @@
 package com.dc.model;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.dc.web.controller.RequestXml;
@@ -17,7 +19,18 @@ public class IpadRequestInfo extends BaseModel {
     private String type;
     private String status;
     private String time;
+
+    public List<CourseTab> getCourseTabs() {
+        return courseTabs;
+    }
+
+    public void setCourseTabs(List<CourseTab> courseTabs) {
+        this.courseTabs = courseTabs;
+    }
+
     private String booker;
+
+    private List<CourseTab> courseTabs;
 
     public String getType() {
         return StringUtils.trimToEmpty(type);
@@ -82,7 +95,8 @@ public class IpadRequestInfo extends BaseModel {
         }
         if (leftBlank) {
             return blank + str;
-        } else {
+        }
+        else {
             return str + blank;
         }
     }

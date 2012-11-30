@@ -40,9 +40,10 @@ public class SocketClient {
         String result = in.readLine();
         server.close();
         log.error("receive data : " + result);
-        if ("done".equals(result)) {
+        if ("done".equalsIgnoreCase(result)) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -66,10 +67,12 @@ public class SocketClient {
             log.error("receive data : " + result);
             if ("done".equals(result)) {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error("socket port:" + port, e);
             return false;
         }

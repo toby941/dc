@@ -45,4 +45,5 @@ public class Constants {
     // 获取完整更新列表
     public static String REQUEST_GetSyncFileList = "GetSyncFileList";
 
+    public static String LOG_NAME = "dc";
 }
