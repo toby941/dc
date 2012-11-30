@@ -68,7 +68,23 @@ public class IpadRequestInfo extends BaseModel {
     }
 
     public String getUserName() {
-        return StringUtils.trimToEmpty(userName);
+        return fillLength(userName, 4, true);
+    }
+
+    public static String fillLength(String str, Integer length, boolean leftBlank) {
+        str = StringUtils.trimToEmpty(str);
+        if (str.length() >= length) {
+            return str;
+        }
+        String blank = "";
+        for (int i = 0; i < length; i++) {
+            blank = blank + " ";
+        }
+        if (leftBlank) {
+            return blank + str;
+        } else {
+            return str + blank;
+        }
     }
 
     public void setUserName(String userName) {
@@ -110,7 +126,7 @@ public class IpadRequestInfo extends BaseModel {
     }
 
     public String getPassword() {
-        return StringUtils.trimToEmpty(password);
+        return fillLength(password, 8, false);
     }
 
     public void setPassword(String password) {

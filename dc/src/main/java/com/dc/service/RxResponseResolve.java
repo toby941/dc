@@ -25,8 +25,7 @@ public class RxResponseResolve {
      * @param requestXml
      * @return
      */
-    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip,
-            RequestXml requestXml) {
+    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip, RequestXml requestXml) {
         boolean resolveResult = false;
         List<IpadRequestInfo> resolveList = new ArrayList<IpadRequestInfo>();
         Class c = this.getClass();
@@ -36,9 +35,8 @@ public class RxResponseResolve {
                 Type t = method.getGenericReturnType();
                 if ("java.util.List<com.dc.model.IpadRequestInfo>".equals(t.toString())) {
                     resolveList = (List<IpadRequestInfo>) ReflectionUtils.invokeMethod(method, this, responseFile);
-                }
-                else {
-                    resolveResult = (boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
+                } else {
+                    resolveResult = (Boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
                 }
                 break;
             }
