@@ -44,11 +44,11 @@ public class ApiService {
     private String updateFileNames;
 
     public String getMenuFilePath() {
-        return menuFilePath;
+        return courseFilePath;
     }
 
     public void setMenuFilePath(String menuFilePath) {
-        this.menuFilePath = menuFilePath;
+        this.courseFilePath = menuFilePath;
     }
 
     public RxResponseResolve getRxResponseResolve() {
@@ -59,7 +59,24 @@ public class ApiService {
         this.rxResponseResolve = rxResponseResolve;
     }
 
-    private String menuFilePath;
+    private String courseFilePath;
+    private String courseTabFilePath;
+
+    public String getCourseFilePath() {
+        return courseFilePath;
+    }
+
+    public void setCourseFilePath(String courseFilePath) {
+        this.courseFilePath = courseFilePath;
+    }
+
+    public String getCourseTabFilePath() {
+        return courseTabFilePath;
+    }
+
+    public void setCourseTabFilePath(String courseTabFilePath) {
+        this.courseTabFilePath = courseTabFilePath;
+    }
 
     // 测试模式 开启 便于在没有socket模式下进行文件读写测试
     private Boolean devMode;
@@ -151,7 +168,8 @@ public class ApiService {
     @PostConstruct
     public void init() {
         SocketClient.port = clientSocketport;
-        PathUtils.menuFilePath = this.menuFilePath;
+        PathUtils.courseFilePath = this.courseFilePath;
+        PathUtils.courseTabPath = this.courseTabFilePath;
         final Integer port4FileUpdate = resurceUpdateSocketPort;
         try {
             Thread t = new Thread() {

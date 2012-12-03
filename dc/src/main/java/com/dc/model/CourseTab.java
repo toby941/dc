@@ -11,7 +11,26 @@ public class CourseTab {
 
     private String id;
     private String name;
+    private String size;
     private List<Course> courses;
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public CourseTab() {
+        super();
+    }
+
+    public CourseTab(String id, String name) {
+        super();
+        this.id = id;
+        this.name = name;
+    }
 
     public String getId() {
         return id;

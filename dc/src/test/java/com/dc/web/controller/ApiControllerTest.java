@@ -48,9 +48,15 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    @Test
+    // @Test
     public void testGetTables() throws ParseException, IOException {
         String xml = "<Request action=\"GetTables\" sid=\"4805629588930\"/>";
+        request(xml);
+    }
+
+    @Test
+    public void testGetMenuList() throws ParseException, IOException {
+        String xml = "<Request action=\"GetMenuList\" sid=\"295776355558239\"/>";
         request(xml);
     }
 }
