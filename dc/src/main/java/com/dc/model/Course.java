@@ -99,6 +99,16 @@ public class Course {
     // 拼音编码(10)
     private String coursePingyin;
 
+    private String courseTypeStr;
+
+    public String getCourseTypeStr() {
+        return courseTypeStr;
+    }
+
+    public void setCourseTypeStr(String courseTypeStr) {
+        this.courseTypeStr = courseTypeStr;
+    }
+
     public Course(String no, String type, String name, String price, String unit, String weightConfirm, String pingyin) {
         super();
         this.courseNo = no;

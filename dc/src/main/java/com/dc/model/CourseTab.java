@@ -2,6 +2,8 @@ package com.dc.model;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 菜品
  * 
@@ -28,8 +30,8 @@ public class CourseTab {
 
     public CourseTab(String id, String name) {
         super();
-        this.id = id;
-        this.name = name;
+        this.id = StringUtils.trimToEmpty(id);
+        this.name = StringUtils.trimToEmpty(name);
     }
 
     public String getId() {

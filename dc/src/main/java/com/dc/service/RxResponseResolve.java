@@ -52,7 +52,7 @@ public class RxResponseResolve {
                     resolveList = (List<IpadRequestInfo>) ReflectionUtils.invokeMethod(method, this, responseFile);
                 }
                 else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
-                    courseTabs = (List<CourseTab>) ReflectionUtils.invokeMethod(method, this, responseFile);
+                    courseTabs = (List<CourseTab>) ReflectionUtils.invokeMethod(method, this);
                 }
                 else {
                     resolveResult = (Boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
@@ -153,7 +153,7 @@ public class RxResponseResolve {
     // 菜品类别(2)类别名称(20)
     // 01凉菜
 
-    public List<CourseTab> resolveGetMenuList(List<String> responseFile) throws IOException {
+    public List<CourseTab> resolveGetMenuList() throws IOException {
         File courseFile = new File(PathUtils.courseFilePath);
         File courseTabFile = new File(PathUtils.courseTabPath);
 

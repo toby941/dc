@@ -15,6 +15,8 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.log4j.Logger;
 import org.apache.velocity.app.VelocityEngine;
 import org.jdom.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +130,8 @@ public class ApiService {
         return writeFile;
     }
 
+    private final Logger log = Logger.getLogger(ApiService.class);
+
     /**
      * 请求处理入口 根据不同的actioin分发
      * 
@@ -144,16 +148,20 @@ public class ApiService {
         String response = null;
         IpadRequestInfo requestInfo = getTxRequest(requestXml);
         String txRequestContent = merge4TxRequest(requestInfo, requestXml);
+        log.warn("psentity:" + psentity);
+        log.warn("write content: " + txRequestContent);
         writeToFile(txRequestContent);
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("ipad", requestInfo);
         if (devMode || SocketClient.noticeTCP()) {
             List<String> responseFile = readFile();
+            log.warn("read content: " + ReflectionToStringBuilder.toString(responseFile));
             model = rxResponseResolve.resolve(responseFile, model, "操作失败", requestXml);
         }
         response =
                 VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine,
                         requestXml.getIpadResponseAction() + ".vm", model);
+        log.warn("return ipad: " + response);
         return response;
     }
 
@@ -222,6 +230,8 @@ public class ApiService {
     public String merge4TxRequest(IpadRequestInfo requestInfo, RequestXml requestXml) {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("ipad", requestInfo);
+        requestXml.setTableId(requestInfo.getTableId());
+        model.put("xml", requestXml);
         String txRrequestContent =
                 VelocityEngineUtils.mergeTemplateIntoString(txReRequestVelocityEngine, requestXml.getAction() + ".vm",
                         model);

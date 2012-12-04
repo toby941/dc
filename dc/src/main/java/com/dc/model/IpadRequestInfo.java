@@ -1,88 +1,14 @@
 package com.dc.model;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 
 import com.dc.web.controller.RequestXml;
 
 public class IpadRequestInfo extends BaseModel {
-
-    private String userName;
-    // 桌号
-    private String tableId;
-    // 用餐人数
-    private String caps;
-    private String password;
-    private String sid;
-
-    private String type;
-    private String status;
-    private String time;
-
-    public List<CourseTab> getCourseTabs() {
-        return courseTabs;
-    }
-
-    public void setCourseTabs(List<CourseTab> courseTabs) {
-        this.courseTabs = courseTabs;
-    }
-
-    private String booker;
-
-    private List<CourseTab> courseTabs;
-
-    public String getType() {
-        return StringUtils.trimToEmpty(type);
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getStatus() {
-        return StringUtils.trimToEmpty(status);
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getTime() {
-        return StringUtils.trimToEmpty(time);
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getBooker() {
-        return StringUtils.trimToEmpty(booker);
-    }
-
-    public void setBooker(String booker) {
-        this.booker = booker;
-    }
-
-    public String getTel() {
-        return StringUtils.trimToEmpty(tel);
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
-
-    private String tel;
-
-    public IpadRequestInfo(String tableId, String caps) {
-        super();
-        this.tableId = tableId;
-        this.caps = caps;
-    }
-
-    public String getUserName() {
-        return fillLength(userName, 4, true);
-    }
 
     public static String fillLength(String str, Integer length, boolean leftBlank) {
         str = StringUtils.trimToEmpty(str);
@@ -100,21 +26,24 @@ public class IpadRequestInfo extends BaseModel {
             return str + blank;
         }
     }
+    private String booker;
+    // 用餐人数
+    private String caps;
+    private List<CourseTab> courseTabs;
+    private String password;
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+    private String sid;
+    private String status;
+    // 桌号
+    private String tableId;
 
-    public String getTableId() {
-        if (tableId == null) {
-            return "0";
-        }
-        return tableId;
-    }
+    private String tel;
 
-    public void setTableId(String tableId) {
-        this.tableId = tableId;
-    }
+    private String time;
+
+    private String type;
+
+    private String userName;
 
     public IpadRequestInfo() {
         super();
@@ -126,6 +55,18 @@ public class IpadRequestInfo extends BaseModel {
         this.tableId = requestXml.getParamValue("TableId");
         this.password = requestXml.getParamValue("Password");
         sid = System.nanoTime() + "";
+        this.time = DateFormatUtils.format(Calendar.getInstance(), "HH:mm:ss");
+
+    }
+
+    public IpadRequestInfo(String tableId, String caps) {
+        super();
+        this.tableId = tableId;
+        this.caps = caps;
+    }
+
+    public String getBooker() {
+        return StringUtils.trimToEmpty(booker);
     }
 
     public String getCaps() {
@@ -135,16 +76,12 @@ public class IpadRequestInfo extends BaseModel {
         return caps;
     }
 
-    public void setCaps(String caps) {
-        this.caps = caps;
+    public List<CourseTab> getCourseTabs() {
+        return courseTabs;
     }
 
     public String getPassword() {
         return fillLength(password, 8, false);
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override
@@ -152,8 +89,75 @@ public class IpadRequestInfo extends BaseModel {
         return StringUtils.trimToEmpty(sid);
     }
 
+    public String getStatus() {
+        return StringUtils.trimToEmpty(status);
+    }
+
+    public String getTableId() {
+        if (tableId == null) {
+            return "0";
+        }
+        return tableId;
+    }
+
+    public String getTel() {
+        return StringUtils.trimToEmpty(tel);
+    }
+
+    public String getTime() {
+        return StringUtils.trimToEmpty(time);
+    }
+
+    public String getType() {
+        return StringUtils.trimToEmpty(type);
+    }
+
+    public String getUserName() {
+        return fillLength(userName, 4, true);
+    }
+
+    public void setBooker(String booker) {
+        this.booker = booker;
+    }
+
+    public void setCaps(String caps) {
+        this.caps = caps;
+    }
+
+    public void setCourseTabs(List<CourseTab> courseTabs) {
+        this.courseTabs = courseTabs;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public void setSid(String sid) {
         this.sid = sid;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setTableId(String tableId) {
+        this.tableId = tableId;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
