@@ -21,12 +21,12 @@ public class PhotoController extends AbstractController {
     @Autowired
     private PageService pageService;
 
-    @RequestMapping(value = "/photo/{courseNo}.jpg", method = RequestMethod.GET)
-    public void requestPhoto(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+    @RequestMapping(value = "/photo/{courseNo}/{index}.jpg", method = RequestMethod.GET)
+    public void requestPhoto(@PathVariable String courseNo, @PathVariable String index, HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
 
         String imagePath = request.getSession().getServletContext().getRealPath("/image/no_image.gif");
-        byte[] photo = pageService.getPhoto(courseNo);
+        byte[] photo = pageService.getPhoto(courseNo, index);
         if (photo == null) {
             photo = FileUtils.readFileToByteArray(new File(imagePath));
         }

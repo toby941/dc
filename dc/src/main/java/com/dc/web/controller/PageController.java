@@ -49,9 +49,15 @@ public class PageController extends AbstractController {
         if (StringUtils.isNotEmpty(desc)) {
             pageService.saveDesc(courseNo, desc);
         }
-        MultipartFile file = form.getPhoto();
-        if (file != null) {
-            pageService.savePhoto(file, courseNo);
+        MultipartFile file1 = form.getPhoto1();
+        MultipartFile file2 = form.getPhoto2();
+        MultipartFile file3 = form.getPhoto3();
+        MultipartFile[] files = new MultipartFile[]{file1, file2, file3};
+        for (int i = 0; i < files.length; i++) {
+            MultipartFile file = files[i];
+            if (file != null) {
+                pageService.savePhoto(file, courseNo, String.valueOf((i + 1)));
+            }
         }
 
         return redirect("/list");

@@ -32,14 +32,31 @@
     </tr>
      <tr>
       <td align="right">预览 </td>
-       <td align="left"><img src="/photo/${command.course.courseNo}.jpg" alt=""  height="150"/> </td>
+       <td align="left"><img src="/photo/${command.course.courseNo}/1.jpg" alt=""  height="150"/> </td>
       
     </tr>
     <tr>
       <td align="right">图片:</td>
-      <td><input type="file" name="photo"/> </td>
+      <td><input type="file" name="photo1"/> </td>
     </tr>
-   
+    <tr>
+      <td align="right">预览 </td>
+       <td align="left"><img src="/photo/${command.course.courseNo}/2.jpg" alt=""  height="150"/> </td>
+      
+    </tr>
+    <tr>
+      <td align="right">图片:</td>
+      <td><input type="file" name="photo2"/> </td>
+    </tr>
+     <tr>
+      <td align="right">预览 </td>
+       <td align="left"><img src="/photo/${command.course.courseNo}/3.jpg" alt=""  height="150"/> </td>
+      
+    </tr>
+    <tr>
+      <td align="right">图片:</td>
+      <td><input type="file" name="photo3"/> </td>
+    </tr>
     <tr>
       <td align="right"><input type="submit" value="提交" class="btnBY"/></td>
       <td><input type="button" onclick="location.href='/list'" value="返回" class="btnBY" /></td>

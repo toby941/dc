@@ -33,8 +33,8 @@ public class PageService {
      * @return
      * @throws IOException
      */
-    public byte[] getPhoto(String courseNo) throws IOException {
-        File f = new File(photoFloderPath + courseNo + ".jpg");
+    public byte[] getPhoto(String courseNo, String index) throws IOException {
+        File f = new File(photoFloderPath + courseNo + "/" + index + ".jpg");
         if (f.exists()) {
             return FileUtils.readFileToByteArray(f);
         }
@@ -97,15 +97,19 @@ public class PageService {
         FileUtils.writeStringToFile(f, desc, "UTF-8");
     }
 
-    public void savePhoto(MultipartFile fileToUpload, String courseNo) throws IOException {
+    public void savePhoto(MultipartFile fileToUpload, String photoName, String index) throws IOException {
+        File floder = new File(photoFloderPath + photoName);
+        if (!floder.exists()) {
+            FileUtils.forceMkdir(floder);
+        }
         byte[] content = fileToUpload.getBytes();
         if (content != null && content.length > 0) {
             String name = fileToUpload.getName();
-            File f = new File(photoFloderPath + courseNo + ".jpg");
+            File f = new File(photoFloderPath + photoName + "/" + index + ".jpg");
             if (f.exists()) {
                 FileUtils.forceDelete(f);
             }
-            f = new File(photoFloderPath + courseNo + ".jpg");
+            f = new File(photoFloderPath + photoName + "/" + index + ".jpg");
             FileUtils.writeByteArrayToFile(f, content);
         }
     }

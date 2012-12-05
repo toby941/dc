@@ -13,7 +13,34 @@ public class PageForm extends AbstractForm {
     private Course course;
 
     private String desc;
-    private MultipartFile photo;
+    private MultipartFile photo1;
+
+    public MultipartFile getPhoto1() {
+        return photo1;
+    }
+
+    public void setPhoto1(MultipartFile photo1) {
+        this.photo1 = photo1;
+    }
+
+    public MultipartFile getPhoto2() {
+        return photo2;
+    }
+
+    public void setPhoto2(MultipartFile photo2) {
+        this.photo2 = photo2;
+    }
+
+    private MultipartFile photo2;
+    private MultipartFile photo3;
+
+    public MultipartFile getPhoto3() {
+        return photo3;
+    }
+
+    public void setPhoto3(MultipartFile photo3) {
+        this.photo3 = photo3;
+    }
 
     @Override
     public String getDesc() {
@@ -23,14 +50,6 @@ public class PageForm extends AbstractForm {
     @Override
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public MultipartFile getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(MultipartFile photo) {
-        this.photo = photo;
     }
 
     public Course getCourse() {
