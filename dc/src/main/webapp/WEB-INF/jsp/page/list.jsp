@@ -33,8 +33,8 @@
         <td><c:out value="${course.courseName}"></c:out></td>
          <td><c:out value="${course.courseTypeStr}"></c:out></td>
         <td>
-        <a href="/admin/companies/view/1">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="/admin/companies/delete/1" data-method="post" data-confirm="您确定要删除该公司吗？">删除</a> </td></tr>
+        <a href="/view/${course.courseNo}">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
+       </td></tr>
        </c:forEach>
 </table>
 </div>

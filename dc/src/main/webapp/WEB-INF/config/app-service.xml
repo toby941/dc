@@ -66,4 +66,9 @@
      <property name="courseFilePath" value="${courseFilePath}"></property>
       <property name="courseTabFilePath" value="${courseTabFilePath}"></property>
     </bean>
+    
+     <bean name="pageService" class="com.dc.service.PageService">
+     <property name="descFloderPath" value="${descFloderPath}"></property>
+      <property name="photoFloderPath" value="${photoFloderPath}"></property>
+     </bean>
 </beans>
