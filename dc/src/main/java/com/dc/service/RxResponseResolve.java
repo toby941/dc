@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -27,6 +28,9 @@ import com.dc.web.socket.SocketClient;
 public class RxResponseResolve {
 
     private static final Logger log = Logger.getLogger(SocketClient.class);
+
+    @Autowired
+    private PageService pageService;
 
     /**
      * 解析RX入口
@@ -172,6 +176,8 @@ public class RxResponseResolve {
             if (m.matches() && (m.groupCount() == 7)) {
                 Course c =
                         new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
+                String desc = pageService.getDesc(c.getCourseNo());
+                c.setDesc(desc);
                 courses.add(c);
             }
         }

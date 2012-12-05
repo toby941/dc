@@ -94,12 +94,24 @@ public class Course {
     private String courseWeightUnit;
     // 需要确认重量否(1)
     private String courseWeightConfirm;
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
     // 制作要求(45)
     private String courseCookingrequest;
     // 拼音编码(10)
     private String coursePingyin;
 
+    // 菜品种类描述
     private String courseTypeStr;
+    // 菜品描述 ipad显示用
+    private String desc;
 
     public String getCourseTypeStr() {
         return courseTypeStr;

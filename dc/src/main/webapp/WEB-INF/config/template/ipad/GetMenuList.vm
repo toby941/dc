@@ -6,7 +6,7 @@
     #foreach( $course in $courseTab.courses)
       <Menu id="$course.courseNo" rate="" price="$course.coursePrice" qty="" pqty="" rebate="" status="1">
         <Name>$course.courseName</Name>
-        <Desc></Desc>
+        <Desc>$course.desc</Desc>
         <File type="" format="" size="" src="" synctime=""></File>
       </Menu> 
       #end
