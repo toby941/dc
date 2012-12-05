@@ -56,7 +56,7 @@ public class ApiControllerTest {
 
     @Test
     public void testGetMenuList() throws ParseException, IOException {
-        String xml = "<Request action=\"GetMenuList\" sid=\"464791886918958\"/>";
+        String xml = "<Request action=\"GetMenuList\" sid=\"467219944436422\"/>";
         request(xml);
     }
 }

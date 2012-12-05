@@ -1,4 +1,4 @@
-<TableInfo size="$!courseTabSize" errInfo="$!errInfo">
+<TabInfo size="$!courseTabSize" errInfo="$!errInfo">
 #foreach( $courseTab in $courseTabs)
  <TabNode>
     <Tab id="$courseTab.id">$courseTab.name</Tab>
