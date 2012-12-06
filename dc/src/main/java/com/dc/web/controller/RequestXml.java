@@ -273,6 +273,18 @@ public class RequestXml {
                 || Constants.REQUEST_Checkout.equals(action);
     }
 
+    /**
+     * 是否需要写tx通信文件
+     * 
+     * @return
+     */
+    public boolean isNeedWriteTx() {
+        return Constants.REQUEST_LOGIN.equals(action) || Constants.REQUEST_OpenTable.equals(action)
+                || Constants.REQUEST_CloseTable.equals(action) || Constants.REQUEST_GetTables.equals(action)
+                || Constants.REQUEST_GetMenuList.equals(action) || Constants.REQUEST_OrderMenu.equals(action)
+                || Constants.REQUEST_Checkout.equals(action);
+    }
+
     public boolean isOpenTable() {
         return Constants.REQUEST_OpenTable.equals(action);
     }

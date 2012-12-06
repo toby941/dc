@@ -146,17 +146,22 @@ public class ApiService {
         RequestXml requestXml = new RequestXml(in);
         IOUtils.closeQuietly(in);
         String response = null;
-        IpadRequestInfo requestInfo = getTxRequest(requestXml);
-        String txRequestContent = merge4TxRequest(requestInfo, requestXml);
-        log.warn("psentity:" + psentity);
-        log.warn("write content: " + txRequestContent);
-        writeToFile(txRequestContent);
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("ipad", requestInfo);
-        if (devMode || SocketClient.noticeTCP()) {
-            List<String> responseFile = readFile();
-            log.warn("read content: " + ReflectionToStringBuilder.toString(responseFile));
-            model = rxResponseResolve.resolve(responseFile, model, "操作失败", requestXml);
+        if (requestXml.isNeedWriteTx()) {
+            IpadRequestInfo requestInfo = getTxRequest(requestXml);
+            String txRequestContent = merge4TxRequest(requestInfo, requestXml);
+            log.warn("psentity:" + psentity);
+            log.warn("write content: " + txRequestContent);
+            writeToFile(txRequestContent);
+            model.put("ipad", requestInfo);
+            if (devMode || SocketClient.noticeTCP()) {
+                List<String> responseFile = readFile();
+                log.warn("read content: " + ReflectionToStringBuilder.toString(responseFile));
+                model = rxResponseResolve.resolve(responseFile, model, "操作失败", requestXml);
+            }
+        }
+        else {
+            model = rxResponseResolve.resolve(null, model, "操作失败", requestXml);
         }
         response =
                 VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine,

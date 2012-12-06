@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import com.dc.model.Course;
+import com.dc.model.CourseFile;
 import com.dc.model.CourseTab;
 import com.dc.model.IpadRequestInfo;
 import com.dc.utils.PathUtils;
@@ -41,10 +42,12 @@ public class RxResponseResolve {
      * @param requestXml
      * @return
      */
-    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip, RequestXml requestXml) {
+    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip,
+            RequestXml requestXml) {
         boolean resolveResult = false;
         List<IpadRequestInfo> resolveList = new ArrayList<IpadRequestInfo>();
         List<CourseTab> courseTabs = new ArrayList<CourseTab>();
+        List<CourseFile> courseFiles = new ArrayList<CourseFile>();
         Class c = this.getClass();
         Method[] ms = c.getDeclaredMethods();
         for (Method method : ms) {
@@ -53,9 +56,14 @@ public class RxResponseResolve {
                 log.error("handle " + t.toString() + " " + method.getName());
                 if ("java.util.List<com.dc.model.IpadRequestInfo>".equals(t.toString())) {
                     resolveList = (List<IpadRequestInfo>) ReflectionUtils.invokeMethod(method, this, responseFile);
-                } else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
+                }
+                else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
                     courseTabs = (List<CourseTab>) ReflectionUtils.invokeMethod(method, this);
-                } else {
+                }
+                else if ("java.util.List<com.dc.model.CourseFile>".equals(t.toString())) {
+                    courseFiles = (List<CourseFile>) ReflectionUtils.invokeMethod(method, this);
+                }
+                else {
                     resolveResult = (Boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
                 }
                 break;
@@ -65,8 +73,9 @@ public class RxResponseResolve {
         model.put("ipadList", resolveList);
         model.put("size", resolveList.size());
         model.put("courseTabs", courseTabs);
+        model.put("courseFiles", courseFiles);
         model.put("courseTabSize", courseTabs.size());
-        if (!resolveResult && resolveList.size() == 0) {
+        if (!resolveResult && resolveList.size() == 0 && courseFiles.size() == 0 && courseTabs.size() == 0) {
             model = putErrorMsg(model, errorTip);
         }
         return model;
@@ -171,10 +180,10 @@ public class RxResponseResolve {
             String responseStr = courseFiles.get(i);
             Matcher m = coursePattern.matcher(responseStr);
             if (m.matches() && (m.groupCount() == 7)) {
-                Course c = new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
-                String descSrc = pageService.getDescHttpSrc(c.getCourseNo());
-                List<String> photoUrl = pageService.getPhotoURL(c.getCourseNo());
-                c.intiFiles(photoUrl, descSrc);
+                Course c =
+                        new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
+                List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo());
+                c.setFiles(fileList);
                 courses.add(c);
             }
         }
@@ -216,8 +225,16 @@ public class RxResponseResolve {
         return true;
     }
 
-    public boolean resolveGetSyncFileList(List<String> responseFile) {
-        return false;
+    public List<CourseFile> resolveGetSyncFileList() throws IOException {
+        List<Course> courseList = pageService.getAllCourse();
+        List<CourseFile> courseFiles = new ArrayList<CourseFile>();
+        for (Course c : courseList) {
+            List<CourseFile> subCourseFiles = c.getFiles();
+            if (CollectionUtils.isNotEmpty(subCourseFiles)) {
+                courseFiles.addAll(subCourseFiles);
+            }
+        }
+        return courseFiles;
     }
 
 }

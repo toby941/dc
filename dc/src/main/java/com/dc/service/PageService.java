@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dc.model.Course;
+import com.dc.model.CourseFile;
 import com.dc.model.CourseTab;
 
 @Service
@@ -38,18 +39,28 @@ public class PageService {
     private String host;
 
     private static String photo_templete = "{0}/photo/{1}/{2}";
-    private static String desc_templete = "{0}/desc/{1}.html";
+    private static String desc_http_templete = "{0}/desc/{1}.html";
 
-    public List<String> getPhotoURL(String courseNo) {
+    public List<CourseFile> getFileNode(String courseNo) throws IOException {
         File folder = new File(photoFloderPath + courseNo);
-        List<String> filePathList = new ArrayList<String>();
+        List<CourseFile> fileList = new ArrayList<CourseFile>();
         if (folder.exists() && folder.list().length > 0) {
-            String[] names = folder.list();
-            for (String name : names) {
-                filePathList.add(MessageFormat.format(photo_templete, host, courseNo, name));
+            File[] photoFiles = folder.listFiles();
+            for (File f : photoFiles) {
+                String name = f.getName();
+                String time = String.valueOf(f.lastModified());
+                String src = MessageFormat.format(photo_templete, host, courseNo, name);
+                CourseFile file = new CourseFile("jpg", src, time);
+                fileList.add(file);
             }
         }
-        return filePathList;
+        File descFile = new File(descFloderPath + courseNo + ".txt");
+        if (descFile.exists()) {
+            CourseFile descCourseFile =
+                    new CourseFile("html", getDescHttpSrc(courseNo), String.valueOf(descFile.lastModified()));
+            fileList.add(descCourseFile);
+        }
+        return fileList;
     }
 
     /**
@@ -63,7 +74,8 @@ public class PageService {
         File f = new File(photoFloderPath + courseNo + "/" + index + ".jpg");
         if (f.exists()) {
             return FileUtils.readFileToByteArray(f);
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -79,7 +91,8 @@ public class PageService {
         File f = new File(descFloderPath + courseNo + ".txt");
         if (f.exists()) {
             return FileUtils.readFileToString(f);
-        } else {
+        }
+        else {
             return StringUtils.EMPTY;
         }
     }
@@ -159,6 +172,6 @@ public class PageService {
     }
 
     public String getDescHttpSrc(String courseNo) {
-        return MessageFormat.format(desc_templete, host, courseNo);
+        return MessageFormat.format(desc_http_templete, host, courseNo);
     }
 }

@@ -1,10 +1,6 @@
 package com.dc.model;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-
-import org.apache.commons.lang.time.DateFormatUtils;
 
 /**
  * 菜肴<br/>
@@ -128,57 +124,6 @@ public class Course {
     private String desc;
 
     private List<CourseFile> files;
-
-    public void intiFiles(List<String> photoFiles, String descSrc) {
-        files = new ArrayList<Course.CourseFile>();
-        for (String src : photoFiles) {
-            CourseFile file = new CourseFile("jpg", src, DateFormatUtils.format(Calendar.getInstance(), "HH:mm:ss"));
-            files.add(file);
-        }
-        CourseFile file = new CourseFile("html", descSrc, DateFormatUtils.format(Calendar.getInstance(), "HH:mm:ss"));
-        files.add(file);
-    }
-    public class CourseFile {
-
-        public CourseFile() {
-            super();
-        }
-
-        public CourseFile(String givenType, String givenSrc, String givenSynctime) {
-            super();
-            this.type = givenType;
-            this.src = givenSrc;
-            this.synctime = givenSynctime;
-        }
-
-        private String type;
-        private String src;
-        private String synctime;
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getSrc() {
-            return src;
-        }
-
-        public void setSrc(String src) {
-            this.src = src;
-        }
-
-        public String getSynctime() {
-            return synctime;
-        }
-
-        public void setSynctime(String synctime) {
-            this.synctime = synctime;
-        }
-    }
 
     public String getCourseTypeStr() {
         return courseTypeStr;
