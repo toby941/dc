@@ -22,8 +22,8 @@ public class PhotoController extends AbstractController {
     private PageService pageService;
 
     @RequestMapping(value = "/photo/{courseNo}/{index}.jpg", method = RequestMethod.GET)
-    public void requestPhoto(@PathVariable String courseNo, @PathVariable String index, HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+    public void requestPhoto(@PathVariable String courseNo, @PathVariable String index, HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         String imagePath = request.getSession().getServletContext().getRealPath("/image/no_image.gif");
         byte[] photo = pageService.getPhoto(courseNo, index);
@@ -35,6 +35,15 @@ public class PhotoController extends AbstractController {
         response.setHeader("Content-Length", String.valueOf(photo.length));
         javax.servlet.ServletOutputStream sout = response.getOutputStream();
         sout.write(photo);
+        sout.flush();
+    }
+
+    @RequestMapping(value = "/desc/{courseNo}.html", method = RequestMethod.GET)
+    public void requestPhoto(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String desc = pageService.getDesc(courseNo);
+        response.setContentType("text/html");
+        javax.servlet.ServletOutputStream sout = response.getOutputStream();
+        sout.write(desc.getBytes());
         sout.flush();
     }
 }

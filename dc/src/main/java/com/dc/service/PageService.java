@@ -2,6 +2,7 @@ package com.dc.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,32 @@ public class PageService {
     private CacheService cacheService;
 
     private String photoFloderPath;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
     private String descFloderPath;
+    private String host;
+
+    private static String photo_templete = "{0}/photo/{1}/{2}";
+    private static String desc_templete = "{0}/desc/{1}.html";
+
+    public List<String> getPhotoURL(String courseNo) {
+        File folder = new File(photoFloderPath + courseNo);
+        List<String> filePathList = new ArrayList<String>();
+        if (folder.exists() && folder.list().length > 0) {
+            String[] names = folder.list();
+            for (String name : names) {
+                filePathList.add(MessageFormat.format(photo_templete, host, courseNo, name));
+            }
+        }
+        return filePathList;
+    }
 
     /**
      * 获取图片流
@@ -37,8 +63,7 @@ public class PageService {
         File f = new File(photoFloderPath + courseNo + "/" + index + ".jpg");
         if (f.exists()) {
             return FileUtils.readFileToByteArray(f);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -54,8 +79,7 @@ public class PageService {
         File f = new File(descFloderPath + courseNo + ".txt");
         if (f.exists()) {
             return FileUtils.readFileToString(f);
-        }
-        else {
+        } else {
             return StringUtils.EMPTY;
         }
     }
@@ -132,5 +156,9 @@ public class PageService {
         }
         cacheService.saveCourse(courses);
         return courses;
+    }
+
+    public String getDescHttpSrc(String courseNo) {
+        return MessageFormat.format(desc_templete, host, courseNo);
     }
 }
