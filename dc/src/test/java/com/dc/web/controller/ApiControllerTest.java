@@ -43,8 +43,7 @@ public class ApiControllerTest {
 
     // @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml =
-                "<Request action=\"OpenTable\" sid=\"997582243409166\"><Param name=\"TableId\">234</Param></Request>";
+        String xml = "<Request action=\"OpenTable\" sid=\"997582243409166\"><Param name=\"TableId\">234</Param></Request>";
         request(xml);
     }
 
@@ -54,13 +53,13 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    // @Test
+    @Test
     public void testGetMenuList() throws ParseException, IOException {
-        String xml = "<Request action=\"GetMenuList\" sid=\"519585985359887\"/>";
+        String xml = "<Request action=\"GetMenuList\" sid=\"1354800969512599000\"/>";
         request(xml);
     }
 
-    @Test
+    // @Test
     public void testGetSyncFileList() throws ParseException, IOException {
         String xml = "<Request action=\"GetSyncFileList\" sid=\"\"/>";
         request(xml);

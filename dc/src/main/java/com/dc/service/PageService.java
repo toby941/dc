@@ -38,8 +38,8 @@ public class PageService {
     private String descFloderPath;
     private String host;
 
-    private static String photo_templete = "{0}/photo/{1}/{2}";
-    private static String desc_http_templete = "{0}/desc/{1}.html";
+    private static String photo_templete = "/photo/{0}/{1}";
+    private static String desc_http_templete = "/desc/{0}.html";
 
     public List<CourseFile> getFileNode(String courseNo) throws IOException {
         File folder = new File(photoFloderPath + courseNo);
@@ -49,15 +49,14 @@ public class PageService {
             for (File f : photoFiles) {
                 String name = f.getName();
                 String time = String.valueOf(f.lastModified());
-                String src = MessageFormat.format(photo_templete, host, courseNo, name);
+                String src = MessageFormat.format(photo_templete, courseNo, name);
                 CourseFile file = new CourseFile("jpg", src, time);
                 fileList.add(file);
             }
         }
         File descFile = new File(descFloderPath + courseNo + ".txt");
         if (descFile.exists()) {
-            CourseFile descCourseFile =
-                    new CourseFile("html", getDescHttpSrc(courseNo), String.valueOf(descFile.lastModified()));
+            CourseFile descCourseFile = new CourseFile("html", getDescHttpSrc(courseNo), String.valueOf(descFile.lastModified()));
             fileList.add(descCourseFile);
         }
         return fileList;
@@ -74,8 +73,7 @@ public class PageService {
         File f = new File(photoFloderPath + courseNo + "/" + index + ".jpg");
         if (f.exists()) {
             return FileUtils.readFileToByteArray(f);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -91,8 +89,7 @@ public class PageService {
         File f = new File(descFloderPath + courseNo + ".txt");
         if (f.exists()) {
             return FileUtils.readFileToString(f);
-        }
-        else {
+        } else {
             return StringUtils.EMPTY;
         }
     }
@@ -172,6 +169,6 @@ public class PageService {
     }
 
     public String getDescHttpSrc(String courseNo) {
-        return MessageFormat.format(desc_http_templete, host, courseNo);
+        return MessageFormat.format(desc_http_templete, courseNo);
     }
 }
