@@ -20,9 +20,9 @@ public class ApiControllerTest {
 
     // private static String host = "http://192.168.1.13:9091";
 
-    // private static String host = "http://zhaduir.vicp.cc:8092";
+    private static String host = "http://zhaduir.vicp.cc:8092";
 
-    private static String host = "http://127.0.0.1:9091";
+    // private static String host = "http://127.0.0.1:9091";
 
     public void request(String xml) throws ParseException, IOException {
         HttpClient httpclient = new DefaultHttpClient();

@@ -159,13 +159,10 @@ public class ApiService {
                 log.warn("read content: " + ReflectionToStringBuilder.toString(responseFile));
                 model = rxResponseResolve.resolve(responseFile, model, "操作失败", requestXml);
             }
-        }
-        else {
+        } else {
             model = rxResponseResolve.resolve(null, model, "操作失败", requestXml);
         }
-        response =
-                VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine,
-                        requestXml.getIpadResponseAction() + ".vm", model);
+        response = VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine, requestXml.getIpadResponseAction() + ".vm", model);
         log.warn("return ipad: " + response);
         return response;
     }
@@ -191,16 +188,14 @@ public class ApiService {
                     super.run();
                     try {
                         updateFileSocket(port4FileUpdate);
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             };
             t.start();
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -213,12 +208,11 @@ public class ApiService {
      * @return
      */
     public IpadRequestInfo getTxRequest(RequestXml requestXml) {
-        String sid = requestXml.getSid();
+        String sid = StringUtils.trimToEmpty(requestXml.getSid());
         IpadRequestInfo requestInfo = null;
         if (StringUtils.isNotBlank(sid)) {
             requestInfo = CacheService.getIpadInfo(sid);
-        }
-        else {
+        } else {
             requestInfo = new IpadRequestInfo(requestXml);
             CacheService.putIpadRequestInfo(requestInfo.getSid(), requestInfo);
         }
@@ -237,9 +231,7 @@ public class ApiService {
         model.put("ipad", requestInfo);
         requestXml.setTableId(requestInfo.getTableId());
         model.put("xml", requestXml);
-        String txRrequestContent =
-                VelocityEngineUtils.mergeTemplateIntoString(txReRequestVelocityEngine, requestXml.getAction() + ".vm",
-                        model);
+        String txRrequestContent = VelocityEngineUtils.mergeTemplateIntoString(txReRequestVelocityEngine, requestXml.getAction() + ".vm", model);
         return txRrequestContent;
     }
 

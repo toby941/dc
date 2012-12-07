@@ -114,8 +114,7 @@ public class RequestXml {
     }
 
     public static void main(String[] args) throws JDOMException, IOException {
-        String xml =
-                "<Request action=\"Login\"><Param name=\"Username\"></Param><Param name=\"Password\"></Param><Param name=\"MacAddr\"></Param></Request>";
+        String xml = "<Request action=\"Login\"><Param name=\"Username\"></Param><Param name=\"Password\"></Param><Param name=\"MacAddr\"></Param></Request>";
         InputStream in = IOUtils.toInputStream(xml);
         RequestXml requestXml = new RequestXml(in);
         System.out.println(requestXml);
@@ -151,8 +150,8 @@ public class RequestXml {
     }
 
     /**
-     * <Request action="Login"> <Param name="Username"></Param> <Param name="Password"></Param> <Param
-     * name="MacAddr"></Param> </Request>
+     * <Request action="Login"> <Param name="Username"></Param> <Param
+     * name="Password"></Param> <Param name="MacAddr"></Param> </Request>
      * 
      * @param input
      * @throws JDOMException
@@ -196,8 +195,7 @@ public class RequestXml {
     public String getIpadResponseAction() {
         if (isNormalAction()) {
             return "OK";
-        }
-        else {
+        } else {
             return action;
         }
     }
@@ -267,9 +265,8 @@ public class RequestXml {
     }
 
     public boolean isNormalAction() {
-        return Constants.REQUEST_Logout.equals(action) || Constants.REQUEST_OpenTable.equals(action)
-                || Constants.REQUEST_CloseTable.equals(action) || Constants.REQUEST_OrderMenu.equals(action)
-                || Constants.REQUEST_UrgeCate.equals(action) || Constants.REQUEST_DelayCate.equals(action)
+        return Constants.REQUEST_Logout.equals(action) || Constants.REQUEST_OpenTable.equals(action) || Constants.REQUEST_CloseTable.equals(action)
+                || Constants.REQUEST_OrderMenu.equals(action) || Constants.REQUEST_UrgeCate.equals(action) || Constants.REQUEST_DelayCate.equals(action)
                 || Constants.REQUEST_Checkout.equals(action);
     }
 
@@ -279,10 +276,8 @@ public class RequestXml {
      * @return
      */
     public boolean isNeedWriteTx() {
-        return Constants.REQUEST_LOGIN.equals(action) || Constants.REQUEST_OpenTable.equals(action)
-                || Constants.REQUEST_CloseTable.equals(action) || Constants.REQUEST_GetTables.equals(action)
-                || Constants.REQUEST_GetMenuList.equals(action) || Constants.REQUEST_OrderMenu.equals(action)
-                || Constants.REQUEST_Checkout.equals(action);
+        return Constants.REQUEST_LOGIN.equals(action) || Constants.REQUEST_OpenTable.equals(action) || Constants.REQUEST_CloseTable.equals(action)
+                || Constants.REQUEST_GetTables.equals(action) || Constants.REQUEST_OrderMenu.equals(action) || Constants.REQUEST_Checkout.equals(action);
     }
 
     public boolean isOpenTable() {
@@ -303,9 +298,8 @@ public class RequestXml {
 
     @Override
     public String toString() {
-        return "RequestXml [action=" + action + ", sid=" + sid + ", params="
-                + ReflectionToStringBuilder.toString(params) + ", menus= " + ReflectionToStringBuilder.toString(menus)
-                + "]";
+        return "RequestXml [action=" + action + ", sid=" + sid + ", params=" + ReflectionToStringBuilder.toString(params) + ", menus= "
+                + ReflectionToStringBuilder.toString(menus) + "]";
     }
 
 }

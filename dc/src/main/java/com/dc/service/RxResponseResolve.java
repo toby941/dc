@@ -42,8 +42,7 @@ public class RxResponseResolve {
      * @param requestXml
      * @return
      */
-    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip,
-            RequestXml requestXml) {
+    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip, RequestXml requestXml) {
         boolean resolveResult = false;
         List<IpadRequestInfo> resolveList = new ArrayList<IpadRequestInfo>();
         List<CourseTab> courseTabs = new ArrayList<CourseTab>();
@@ -56,14 +55,11 @@ public class RxResponseResolve {
                 log.error("handle " + t.toString() + " " + method.getName());
                 if ("java.util.List<com.dc.model.IpadRequestInfo>".equals(t.toString())) {
                     resolveList = (List<IpadRequestInfo>) ReflectionUtils.invokeMethod(method, this, responseFile);
-                }
-                else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
+                } else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
                     courseTabs = (List<CourseTab>) ReflectionUtils.invokeMethod(method, this);
-                }
-                else if ("java.util.List<com.dc.model.CourseFile>".equals(t.toString())) {
+                } else if ("java.util.List<com.dc.model.CourseFile>".equals(t.toString())) {
                     courseFiles = (List<CourseFile>) ReflectionUtils.invokeMethod(method, this);
-                }
-                else {
+                } else {
                     resolveResult = (Boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
                 }
                 break;
@@ -180,8 +176,7 @@ public class RxResponseResolve {
             String responseStr = courseFiles.get(i);
             Matcher m = coursePattern.matcher(responseStr);
             if (m.matches() && (m.groupCount() == 7)) {
-                Course c =
-                        new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
+                Course c = new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
                 List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo());
                 c.setFiles(fileList);
                 courses.add(c);

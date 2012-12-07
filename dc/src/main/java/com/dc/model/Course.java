@@ -2,6 +2,8 @@ package com.dc.model;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 菜肴<br/>
  * 菜品编号(5)类别号(2)中文名称(20)单价(9)单位(4)重量单位(4)需要确认重量否(1)制作要求(45)拼音编码(10)<br/>
@@ -35,7 +37,11 @@ public class Course {
     }
 
     public String getCoursePrice() {
-        return coursePrice;
+        if (StringUtils.isNotBlank(coursePrice)) {
+            return coursePrice.substring(0, coursePrice.length() - 1);
+        } else {
+            return "";
+        }
     }
 
     public void setCoursePrice(String coursePrice) {

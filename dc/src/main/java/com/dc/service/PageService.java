@@ -88,7 +88,7 @@ public class PageService {
     public String getDesc(String courseNo) throws IOException {
         File f = new File(descFloderPath + courseNo + ".txt");
         if (f.exists()) {
-            return FileUtils.readFileToString(f);
+            return FileUtils.readFileToString(f, "UTF-8");
         } else {
             return StringUtils.EMPTY;
         }

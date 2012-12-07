@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import com.dc.web.form.PageForm;
 @Controller
 @RequestMapping("/api")
 public class ApiController extends AbstractController {
+    private final Logger log = Logger.getLogger(ApiController.class);
 
     @Autowired
     private ApiService apiService;
@@ -37,10 +39,12 @@ public class ApiController extends AbstractController {
     @RequestMapping(value = "/ipad")
     public void ipadRequest(HttpServletRequest request, HttpServletResponse response) throws JDOMException, IOException {
         String command = request.getParameter("psentity");
+        log.error("psentity:" + command);
         String str = apiService.handleRequest(command);
-        response.setContentType("text/html");
+        System.out.println(str);
+        response.setContentType("text/html; charset=UTF-8");
         javax.servlet.ServletOutputStream sout = response.getOutputStream();
-        sout.write(str.getBytes());
+        sout.write(str.getBytes("UTF-8"));
         sout.flush();
         sout.close();
     }

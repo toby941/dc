@@ -4,15 +4,15 @@
     <Tab id="$courseTab.id">$courseTab.name</Tab>
     <MenuInfo size="$courseTab.size" errInfo="">
     #foreach( $course in $courseTab.courses)
-      <Menu id="$course.courseNo" rate="" price="$course.coursePrice" qty="" pqty="" rebate="" status="1">
+      <Menu id="$course.courseNo" rate="" price="$course.coursePrice" unit="$!course.courseUnit" qty="" pqty="" rebate="" status="1">
         <Name>$course.courseName</Name>
         <Desc></Desc>
         #foreach( $file in $course.files)
         <File type="$file.type" format="" size="" src="$file.src" synctime="$file.synctime"></File>
          #end
-      </Menu> 
+      </Menu>  
       #end
     </MenuInfo>
   </TabNode>
 #end
-<TabInfo>
+</TabInfo>
