@@ -6,12 +6,14 @@ import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -150,12 +152,11 @@ public class ApiService {
         if (requestXml.isNeedWriteTx()) {
             IpadRequestInfo requestInfo = getTxRequest(requestXml);
             String txRequestContent = merge4TxRequest(requestInfo, requestXml);
-            log.warn("psentity:" + psentity);
             log.warn("write content: " + txRequestContent);
             writeToFile(txRequestContent);
             model.put("ipad", requestInfo);
             if (devMode || SocketClient.noticeTCP()) {
-                List<String> responseFile = readFile();
+                List<String> responseFile = readFile(readFile);
                 log.warn("read content: " + ReflectionToStringBuilder.toString(responseFile));
                 model = rxResponseResolve.resolve(responseFile, model, "操作失败", requestXml);
             }
@@ -212,10 +213,11 @@ public class ApiService {
         IpadRequestInfo requestInfo = null;
         if (StringUtils.isNotBlank(sid)) {
             requestInfo = CacheService.getIpadInfo(sid);
+            requestInfo.addParams(requestXml);
         } else {
             requestInfo = new IpadRequestInfo(requestXml);
-            CacheService.putIpadRequestInfo(requestInfo.getSid(), requestInfo);
         }
+        CacheService.putIpadRequestInfo(requestInfo.getSid(), requestInfo);
         return requestInfo;
     }
 
@@ -235,12 +237,26 @@ public class ApiService {
         return txRrequestContent;
     }
 
-    public List<String> readFile() throws IOException {
-        File file = new File(readFile);
+    public List<String> readFile(String filePath) throws IOException {
+        File file = new File(filePath);
         if (file.exists()) {
             return FileUtils.readLines(file, "GBK");
         }
         return null;
+    }
+
+    public String getCurrentTxAndRx() throws IOException {
+        List<String> rx = readFile(readFile);
+        List<String> tx = readFile(writeFile);
+        String rxInOneLine = StringUtils.EMPTY;
+        String txInOneLine = StringUtils.EMPTY;
+        if (CollectionUtils.isNotEmpty(rx)) {
+            rxInOneLine = StringUtils.join(rx, "\r\n");
+        }
+        if (CollectionUtils.isNotEmpty(tx)) {
+            txInOneLine = StringUtils.join(tx, "\r\n");
+        }
+        return MessageFormat.format("rx file :{0}\r\n tx file: {1}", rxInOneLine, txInOneLine);
     }
 
     public void setClientSocketport(Integer clientSocketport) {

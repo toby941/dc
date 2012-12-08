@@ -14,13 +14,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.junit.Test;
 
 public class ApiControllerTest {
 
     // private static String host = "http://192.168.1.13:9091";
 
-    private static String host = "http://zhaduir.vicp.cc:8092";
+    // private static String host = "http://zhaduir.vicp.cc:8092";
+    private static String host = "http://517ps.eicp.net:8092";
 
     // private static String host = "http://127.0.0.1:9091";
 
@@ -29,6 +29,16 @@ public class ApiControllerTest {
         HttpPost httpPost = new HttpPost(host + "/api/ipad");
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("psentity", xml));
+        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+        HttpResponse response = httpclient.execute(httpPost);
+        System.err.println(EntityUtils.toString(response.getEntity()));
+    }
+
+    // @Test
+    public void request() throws ParseException, IOException {
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(host + "/api/txrx");
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
         HttpResponse response = httpclient.execute(httpPost);
         System.err.println(EntityUtils.toString(response.getEntity()));
@@ -53,7 +63,7 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    @Test
+    // @Test
     public void testGetMenuList() throws ParseException, IOException {
         String xml = "<Request action=\"GetMenuList\" sid=\"1354800969512599000\"/>";
         request(xml);

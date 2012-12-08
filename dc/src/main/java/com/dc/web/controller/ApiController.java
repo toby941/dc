@@ -41,7 +41,16 @@ public class ApiController extends AbstractController {
         String command = request.getParameter("psentity");
         log.error("psentity:" + command);
         String str = apiService.handleRequest(command);
-        System.out.println(str);
+        response.setContentType("text/html; charset=UTF-8");
+        javax.servlet.ServletOutputStream sout = response.getOutputStream();
+        sout.write(str.getBytes("UTF-8"));
+        sout.flush();
+        sout.close();
+    }
+
+    @RequestMapping(value = "/txrx")
+    public void txrxRequest(HttpServletRequest request, HttpServletResponse response) throws JDOMException, IOException {
+        String str = apiService.getCurrentTxAndRx();
         response.setContentType("text/html; charset=UTF-8");
         javax.servlet.ServletOutputStream sout = response.getOutputStream();
         sout.write(str.getBytes("UTF-8"));

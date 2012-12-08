@@ -16,15 +16,19 @@ public class IpadRequestInfo extends BaseModel {
             return str;
         }
         String blank = "";
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length - str.length(); i++) {
             blank = blank + " ";
         }
         if (leftBlank) {
             return blank + str;
-        }
-        else {
+        } else {
             return str + blank;
         }
+    }
+
+    public static void main(String[] args) {
+        String s = "002";
+        System.out.println(fillLength(s, 5, false));
     }
     private String booker;
     // 用餐人数
@@ -45,6 +49,11 @@ public class IpadRequestInfo extends BaseModel {
 
     private String userName;
 
+    // 实际用餐人数 OpenTable 命令携带：GuestNum；TableId
+    private String guestNum;
+    // 客户端mac地址 Login命令携带：Username；Password；MacAddr
+    private String macAddr;
+
     public IpadRequestInfo() {
         super();
     }
@@ -54,9 +63,19 @@ public class IpadRequestInfo extends BaseModel {
         this.caps = requestXml.getParamValue("Caps");
         this.tableId = requestXml.getParamValue("TableId");
         this.password = requestXml.getParamValue("Password");
+        this.macAddr = requestXml.getParamValue("MacAddr");
         sid = System.nanoTime() + "";
         this.time = DateFormatUtils.format(Calendar.getInstance(), "HH:mm:ss");
 
+    }
+
+    public void addParams(RequestXml requestXml) {
+        String gvenCaps = requestXml.getParamValue("Caps");
+        String givenTableId = requestXml.getParamValue("TableId");
+        String givenGuestNum = requestXml.getParamValue("GuestNum");
+        caps = StringUtils.defaultIfEmpty(gvenCaps, caps);
+        tableId = StringUtils.defaultIfEmpty(givenTableId, tableId);
+        guestNum = StringUtils.defaultIfEmpty(givenGuestNum, guestNum);
     }
 
     public IpadRequestInfo(String tableId, String caps) {
@@ -71,9 +90,9 @@ public class IpadRequestInfo extends BaseModel {
 
     public String getCaps() {
         if (caps == null) {
-            return "0";
+            caps = "6";
         }
-        return caps;
+        return fillLength(caps, 2, false);
     }
 
     public List<CourseTab> getCourseTabs() {
@@ -95,9 +114,10 @@ public class IpadRequestInfo extends BaseModel {
 
     public String getTableId() {
         if (tableId == null) {
-            return "0";
+            tableId = "0";
         }
-        return tableId;
+
+        return fillLength(tableId, 4, false);
     }
 
     public String getTel() {
@@ -113,7 +133,7 @@ public class IpadRequestInfo extends BaseModel {
     }
 
     public String getUserName() {
-        return fillLength(userName, 4, true);
+        return fillLength(userName, 5, false);
     }
 
     public void setBooker(String booker) {
@@ -160,4 +180,5 @@ public class IpadRequestInfo extends BaseModel {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
 }
