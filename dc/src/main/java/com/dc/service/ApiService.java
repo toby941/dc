@@ -141,11 +141,13 @@ public class ApiService {
      * @throws IOException
      * @throws SQLException
      */
-    public String handleRequest(String psentity) throws JDOMException, IOException {
+    public synchronized String handleRequest(String psentity) throws JDOMException, IOException {
         InputStream in = IOUtils.toInputStream(psentity);
         RequestXml requestXml = new RequestXml(in);
         IOUtils.closeQuietly(in);
         String response = null;
+        Long nanoTime = System.nanoTime();
+        log.warn("########handle begin id :" + nanoTime);
         Map<String, Object> model = new HashMap<String, Object>();
         if (requestXml.isNeedWriteTx()) {
             IpadRequestInfo requestInfo = getTxRequest(requestXml);
@@ -167,6 +169,7 @@ public class ApiService {
                 VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine,
                         requestXml.getIpadResponseAction() + ".vm", model);
         log.warn("return ipad: " + response);
+        log.warn("########handle end  id :" + nanoTime);
         return response;
     }
 
