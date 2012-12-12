@@ -71,9 +71,17 @@ public class RequestXml {
             this.tableId = tableId;
         }
 
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
         @Override
         public String toString() {
-            return "Menu [tableId=" + tableId + ", id=" + id + ", count=" + count + ", name=" + name + "]";
+            return "Menu [tableId=" + tableId + ", id=" + id + ", count=" + count + ", name=" + name + ", time=" + time + "]";
         }
     }
 

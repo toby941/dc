@@ -14,6 +14,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.junit.Test;
 
 public class ApiControllerTest {
 
@@ -74,4 +75,12 @@ public class ApiControllerTest {
         String xml = "<Request action=\"GetSyncFileList\" sid=\"\"/>";
         request(xml);
     }
+
+    @Test
+    public void orderMenu() throws ParseException, IOException {
+        String xml =
+                "<Request action=\"OrderMenu\" sid=\"102357358329241\"><Menu id=\"03008\" pqty=\"1\" /><Menu id=\"03002\" pqty=\"1\" /><Menu id=\"05001\" pqty=\"1\" /><Menu id=\"05002\" pqty=\"1\" /><Menu id=\"02003\" pqty=\"1\" /></Request>";
+        request(xml);
+    }
+
 }

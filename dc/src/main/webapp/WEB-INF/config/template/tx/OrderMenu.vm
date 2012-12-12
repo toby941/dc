@@ -3,5 +3,5 @@
 DC   008
 $ipad.tableId                                  $!ipad.time
 #foreach( $menu in $xml.menus )
-$menu.tableId    $menu.id $menu.count                    0 $menu.time      12  
+$ipad.tableId    $menu.id $menu.count                    0 $menu.time      12  
 #end
