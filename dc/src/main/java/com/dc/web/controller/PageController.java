@@ -25,17 +25,37 @@ public class PageController extends AbstractController {
     @Autowired
     private PageService pageService;
 
+    @RequestMapping(value = "/logon", method = RequestMethod.GET)
+    public ModelAndView logon(HttpServletRequest request, HttpServletResponse response, PageForm form) throws IOException {
+        Boolean isLogon = (Boolean) request.getSession().getAttribute("flag");
+        if (isLogon != null && isLogon) {
+            return redirect("/list");
+        } else {
+            return new ModelAndView("page/logon", DEFAULT_COMMAND, form);
+        }
+    }
+
+    @RequestMapping(value = "/logon", method = RequestMethod.POST)
+    public ModelAndView doLogon(HttpServletRequest request, HttpServletResponse response, PageForm form) throws IOException {
+        String userName = form.getUserName();
+        String password = form.getPassword();
+        if ("admin".equals(userName) && "2012".equals(password)) {
+            request.getSession().setAttribute("flag", new Boolean(true));
+            return redirect("/list");
+        } else {
+            return new ModelAndView("page/logon", DEFAULT_COMMAND, form);
+        }
+    }
+
     @RequestMapping(value = "/list")
-    public ModelAndView list(HttpServletRequest request, HttpServletResponse response, PageForm form)
-            throws IOException {
+    public ModelAndView list(HttpServletRequest request, HttpServletResponse response, PageForm form) throws IOException {
         List<Course> courses = pageService.getAllCourse();
         form.setCourses(courses);
         return new ModelAndView("page/list", DEFAULT_COMMAND, form);
     }
 
     @RequestMapping(value = "/view/{courseNo}", method = RequestMethod.GET)
-    public ModelAndView view(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response,
-            PageForm form) throws IOException {
+    public ModelAndView view(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response, PageForm form) throws IOException {
         Course course = pageService.getCourse(courseNo);
         form.setCourse(course);
         form.setDesc(pageService.getDesc(courseNo));
@@ -43,8 +63,7 @@ public class PageController extends AbstractController {
     }
 
     @RequestMapping(value = "/edit/{courseNo}", method = RequestMethod.POST)
-    public ModelAndView edit(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response,
-            PageForm form) throws IOException {
+    public ModelAndView edit(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response, PageForm form) throws IOException {
         String desc = form.getDesc();
         if (StringUtils.isNotEmpty(desc)) {
             pageService.saveDesc(courseNo, desc);
@@ -52,7 +71,7 @@ public class PageController extends AbstractController {
         MultipartFile file1 = form.getPhoto1();
         MultipartFile file2 = form.getPhoto2();
         MultipartFile file3 = form.getPhoto3();
-        MultipartFile[] files = new MultipartFile[]{file1, file2, file3};
+        MultipartFile[] files = new MultipartFile[] { file1, file2, file3 };
         for (int i = 0; i < files.length; i++) {
             MultipartFile file = files[i];
             if (file != null) {
