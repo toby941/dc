@@ -472,7 +472,11 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     }
 
     private boolean isNeedSessionUser(String url) {
-        return isNotApiUrl(url);
+        return isNotApiUrl(url) && isNotPhotoUrl(url);
+    }
+
+    private boolean isNotPhotoUrl(String url) {
+        return url.indexOf("jpg") == -1;
     }
 
     private boolean isNotApiUrl(String url) {
