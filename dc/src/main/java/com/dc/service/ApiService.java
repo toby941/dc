@@ -65,6 +65,15 @@ public class ApiService {
 
     private String courseFilePath;
     private String courseTabFilePath;
+    private String courseTablePath;
+
+    public String getCourseTablePath() {
+        return courseTablePath;
+    }
+
+    public void setCourseTablePath(String courseTablePath) {
+        this.courseTablePath = courseTablePath;
+    }
 
     public String getCourseFilePath() {
         return courseFilePath;
@@ -162,10 +171,13 @@ public class ApiService {
                 log.warn("read content: " + ReflectionToStringBuilder.toString(responseFile));
                 model = rxResponseResolve.resolve(responseFile, model, "操作失败", requestXml);
             }
-        } else {
+        }
+        else {
             model = rxResponseResolve.resolve(null, model, "操作失败", requestXml);
         }
-        response = VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine, requestXml.getIpadResponseAction() + ".vm", model);
+        response =
+                VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine,
+                        requestXml.getIpadResponseAction() + ".vm", model);
         log.warn("return ipad: " + response);
         log.warn("########handle end  id :" + nanoTime);
         return response;
@@ -184,6 +196,7 @@ public class ApiService {
         SocketClient.port = clientSocketport;
         PathUtils.courseFilePath = this.courseFilePath;
         PathUtils.courseTabPath = this.courseTabFilePath;
+        PathUtils.courseTablePath = this.courseTablePath;
         final Integer port4FileUpdate = resurceUpdateSocketPort;
         try {
             Thread t = new Thread() {
@@ -192,14 +205,16 @@ public class ApiService {
                     super.run();
                     try {
                         updateFileSocket(port4FileUpdate);
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             };
             t.start();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -217,7 +232,8 @@ public class ApiService {
         if (StringUtils.isNotBlank(sid)) {
             requestInfo = CacheService.getIpadInfo(sid);
             requestInfo.addParams(requestXml);
-        } else {
+        }
+        else {
             requestInfo = new IpadRequestInfo(requestXml);
         }
         CacheService.putIpadRequestInfo(requestInfo.getSid(), requestInfo);
@@ -236,7 +252,9 @@ public class ApiService {
         model.put("ipad", requestInfo);
         requestXml.setTableId(requestInfo.getTableId());
         model.put("xml", requestXml);
-        String txRrequestContent = VelocityEngineUtils.mergeTemplateIntoString(txReRequestVelocityEngine, requestXml.getAction() + ".vm", model);
+        String txRrequestContent =
+                VelocityEngineUtils.mergeTemplateIntoString(txReRequestVelocityEngine, requestXml.getAction() + ".vm",
+                        model);
         return txRrequestContent;
     }
 

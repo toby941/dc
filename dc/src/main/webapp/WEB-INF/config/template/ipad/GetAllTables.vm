@@ -1,0 +1,5 @@
+<TableInfo size="$!courseTables.size" errInfo="$!errInfo">
+#foreach( $table in $courseTables )
+  <Table id="$table.id" name="$table.name"/>
+#end
+</TableInfo>

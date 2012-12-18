@@ -39,7 +39,8 @@ public class Course {
     public String getCoursePrice() {
         if (StringUtils.isNotBlank(coursePrice)) {
             return coursePrice.substring(0, coursePrice.length() - 1);
-        } else {
+        }
+        else {
             return "";
         }
     }
@@ -103,6 +104,11 @@ public class Course {
     // 需要确认重量否(1)
     private String courseWeightConfirm;
 
+    // 数量
+    private String courseCount;
+    // 总价=coursePrice*courseCount
+    private String sumPrice;
+
     public String getDesc() {
         return desc;
     }
@@ -139,6 +145,17 @@ public class Course {
         this.courseTypeStr = courseTypeStr;
     }
 
+    /**
+     * 解析本地菜单文件 正则构造菜单列表
+     * 
+     * @param no
+     * @param type
+     * @param name
+     * @param price
+     * @param unit
+     * @param weightConfirm
+     * @param pingyin
+     */
     public Course(String no, String type, String name, String price, String unit, String weightConfirm, String pingyin) {
         super();
         this.courseNo = no;
@@ -149,6 +166,22 @@ public class Course {
         this.courseWeightConfirm = weightConfirm;
         this.coursePingyin = pingyin;
 
+    }
+
+    /**
+     * 根据上位软件返回 构造已点菜单详情
+     * 
+     * @param name
+     * @param count
+     * @param price
+     * @param sumPrice
+     */
+    public Course(String name, String count, String price, String sumPrice) {
+        super();
+        this.courseName = name;
+        this.courseCount = count;
+        this.coursePrice = price;
+        this.sumPrice = sumPrice;
     }
 
     public Course() {

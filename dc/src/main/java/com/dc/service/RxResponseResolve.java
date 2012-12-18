@@ -20,6 +20,7 @@ import org.springframework.util.ReflectionUtils;
 import com.dc.model.Course;
 import com.dc.model.CourseFile;
 import com.dc.model.CourseTab;
+import com.dc.model.CourseTable;
 import com.dc.model.IpadRequestInfo;
 import com.dc.utils.PathUtils;
 import com.dc.web.controller.RequestXml;
@@ -42,11 +43,14 @@ public class RxResponseResolve {
      * @param requestXml
      * @return
      */
-    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip, RequestXml requestXml) {
+    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip,
+            RequestXml requestXml) {
         boolean resolveResult = false;
         List<IpadRequestInfo> resolveList = new ArrayList<IpadRequestInfo>();
         List<CourseTab> courseTabs = new ArrayList<CourseTab>();
         List<CourseFile> courseFiles = new ArrayList<CourseFile>();
+        List<Course> courseLists = new ArrayList<Course>();
+        List<CourseTable> courseTables = new ArrayList<CourseTable>();
         Class c = this.getClass();
         Method[] ms = c.getDeclaredMethods();
         for (Method method : ms) {
@@ -55,11 +59,20 @@ public class RxResponseResolve {
                 log.error("handle " + t.toString() + " " + method.getName());
                 if ("java.util.List<com.dc.model.IpadRequestInfo>".equals(t.toString())) {
                     resolveList = (List<IpadRequestInfo>) ReflectionUtils.invokeMethod(method, this, responseFile);
-                } else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
+                }
+                else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
                     courseTabs = (List<CourseTab>) ReflectionUtils.invokeMethod(method, this);
-                } else if ("java.util.List<com.dc.model.CourseFile>".equals(t.toString())) {
+                }
+                else if ("java.util.List<com.dc.model.CourseFile>".equals(t.toString())) {
                     courseFiles = (List<CourseFile>) ReflectionUtils.invokeMethod(method, this);
-                } else {
+                }
+                else if ("java.util.List<com.dc.model.Course>".equals(t.toString())) {
+                    courseLists = (List<Course>) ReflectionUtils.invokeMethod(method, this, responseFile);
+                }
+                else if ("java.util.List<com.dc.model.CourseTable>".equals(t.toString())) {
+                    courseTables = (List<CourseTable>) ReflectionUtils.invokeMethod(method, this);
+                }
+                else {
                     resolveResult = (Boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
                 }
                 break;
@@ -70,8 +83,12 @@ public class RxResponseResolve {
         model.put("size", resolveList.size());
         model.put("courseTabs", courseTabs);
         model.put("courseFiles", courseFiles);
+        model.put("courseLists", courseLists);
+        model.put("courseTables", courseTables);
         model.put("courseTabSize", courseTabs.size());
-        if (!resolveResult && resolveList.size() == 0 && courseFiles.size() == 0 && courseTabs.size() == 0) {
+        if (!resolveResult && resolveList.size() == 0 && CollectionUtils.isEmpty(courseFiles)
+                && CollectionUtils.isEmpty(courseTabs) && CollectionUtils.isEmpty(courseTables)
+                && CollectionUtils.isEmpty(courseLists)) {
             model = putErrorMsg(model, errorTip);
         }
         return model;
@@ -176,7 +193,8 @@ public class RxResponseResolve {
             String responseStr = courseFiles.get(i);
             Matcher m = coursePattern.matcher(responseStr);
             if (m.matches() && (m.groupCount() == 7)) {
-                Course c = new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
+                Course c =
+                        new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
                 List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo());
                 c.setFiles(fileList);
                 courses.add(c);
@@ -232,4 +250,52 @@ public class RxResponseResolve {
         return courseFiles;
     }
 
+    /**
+     * 解析上位软件返回的已点菜单
+     * 
+     * @param responseFile
+     * @return
+     * @throws IOException
+     */
+    public List<Course> resolveGetOrderList(List<String> responseFile) throws IOException {
+        List<Course> courseList = new ArrayList<Course>();
+        if (CollectionUtils.isNotEmpty(responseFile) && responseFile.size() >= 2) {
+            for (int i = 2; i < responseFile.size(); i = i + 2) {
+                String name = responseFile.get(i).replace("⊙", "").trim();
+                String secondLine = responseFile.get(i + 1).trim();
+                Pattern coursePattern = Pattern.compile("(\\d+)\\D+(\\d+)=(\\d+)");
+                Matcher m = coursePattern.matcher(secondLine);
+                if (m.matches() && m.groupCount() == 3) {
+                    Course c = new Course(name, m.group(1), m.group(2), m.group(3));
+                    courseList.add(c);
+                }
+            }
+        }
+
+        return courseList;
+    }
+
+    /**
+     * 读本地文件 获取所有桌台信息
+     * 
+     * @return
+     * @throws IOException
+     */
+    public List<CourseTable> resolveGetAllTables() throws IOException {
+        File courseTableFile = new File(PathUtils.courseTablePath);
+        Pattern courseTablePattern = Pattern.compile("(\\d+)(.+)");
+        List<String> courseTableFiles = FileUtils.readLines(courseTableFile, "GBK");
+
+        List<CourseTable> courseTables = new ArrayList<CourseTable>();
+
+        for (int i = 0; i < courseTableFiles.size(); i++) {
+            String responseStr = courseTableFiles.get(i);
+            Matcher m = courseTablePattern.matcher(responseStr);
+            if (m.matches() && (m.groupCount() == 2)) {
+                CourseTable c = new CourseTable(m.group(1), m.group(2));
+                courseTables.add(c);
+            }
+        }
+        return courseTables;
+    }
 }

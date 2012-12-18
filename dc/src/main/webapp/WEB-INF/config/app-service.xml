@@ -65,6 +65,7 @@
      <property name="devMode" value="${devMode}"></property>
      <property name="courseFilePath" value="${courseFilePath}"></property>
       <property name="courseTabFilePath" value="${courseTabFilePath}"></property>
+      <property name="courseTablePath" value="${courseTablePath}"></property>
     </bean>
     
      <bean name="pageService" class="com.dc.service.PageService">
