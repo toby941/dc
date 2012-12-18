@@ -1,1 +1,1 @@
-<Response errInfo="$!ipad.errInfo">OK</Response>
+<Response errInfo="$!errInfo">#if($!username=='')OK#end</Response>
