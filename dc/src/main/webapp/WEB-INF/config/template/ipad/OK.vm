@@ -1,1 +1,1 @@
-<Response errInfo="$!errInfo">#if($!username=='')OK#end</Response>
+<Response errInfo="$!errInfo">#if($!errInfo=='')OK#end</Response>

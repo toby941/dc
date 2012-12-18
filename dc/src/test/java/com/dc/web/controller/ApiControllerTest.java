@@ -21,9 +21,9 @@ public class ApiControllerTest {
     // private static String host = "http://192.168.1.13:9091";
 
     // private static String host = "http://zhaduir.vicp.cc:8092";
-    private static String host = "http://517ps.eicp.net:8092";
+    // private static String host = "http://517ps.eicp.net:8092";
 
-    // private static String host = "http://127.0.0.1:9091";
+    private static String host = "http://127.0.0.1:9091";
 
     public void request(String xml) throws ParseException, IOException {
         HttpClient httpclient = new DefaultHttpClient();
@@ -83,9 +83,15 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    @Test
+    // @Test
     public void orderAllTables() throws ParseException, IOException {
         String xml = "<Request action=\"GetAllTables\" sid=\"102357358329241\"></Request>";
+        request(xml);
+    }
+
+    @Test
+    public void SwitchTable() throws ParseException, IOException {
+        String xml = "<Request action=\"SwitchTable\" sid=\"102357358329241\"><Param name=\"TableId\">1</Param></Request>";
         request(xml);
     }
 }
