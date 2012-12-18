@@ -18,10 +18,10 @@ import org.junit.Test;
 
 public class ApiControllerTest {
 
-    private static String host = "http://192.168.1.13:9091";
+    // private static String host = "http://192.168.1.13:9091";
 
     // private static String host = "http://zhaduir.vicp.cc:8092";
-    // private static String host = "http://517ps.eicp.net:8092";
+    private static String host = "http://517ps.eicp.net:8092";
 
     // private static String host = "http://127.0.0.1:9091";
 
@@ -54,8 +54,7 @@ public class ApiControllerTest {
 
     // @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml =
-                "<Request action=\"OpenTable\" sid=\"997582243409166\"><Param name=\"TableId\">234</Param></Request>";
+        String xml = "<Request action=\"OpenTable\" sid=\"997582243409166\"><Param name=\"TableId\">234</Param></Request>";
         request(xml);
     }
 
