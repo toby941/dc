@@ -284,8 +284,9 @@ public class RequestXml {
      * @return
      */
     public boolean isNeedWriteTx() {
-        return Constants.REQUEST_LOGIN.equals(action) || Constants.REQUEST_OpenTable.equals(action) || Constants.REQUEST_CloseTable.equals(action)
-                || Constants.REQUEST_GetTables.equals(action) || Constants.REQUEST_OrderMenu.equals(action) || Constants.REQUEST_Checkout.equals(action);
+        return Constants.REQUEST_GetOrderList.equals(action) || Constants.REQUEST_LOGIN.equals(action) || Constants.REQUEST_OpenTable.equals(action)
+                || Constants.REQUEST_CloseTable.equals(action) || Constants.REQUEST_GetTables.equals(action) || Constants.REQUEST_OrderMenu.equals(action)
+                || Constants.REQUEST_Checkout.equals(action);
     }
 
     public boolean isOpenTable() {

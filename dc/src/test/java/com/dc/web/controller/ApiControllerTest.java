@@ -14,16 +14,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.junit.Test;
 
 public class ApiControllerTest {
 
     // private static String host = "http://192.168.1.13:9091";
 
     // private static String host = "http://zhaduir.vicp.cc:8092";
-    // private static String host = "http://517ps.eicp.net:8092";
+    private static String host = "http://517ps.eicp.net:8092";
 
-    private static String host = "http://127.0.0.1:9091";
+    // private static String host = "http://127.0.0.1:9091";
 
     public void request(String xml) throws ParseException, IOException {
         HttpClient httpclient = new DefaultHttpClient();
@@ -48,14 +47,13 @@ public class ApiControllerTest {
     // @Test
     public void testLogin() throws ClientProtocolException, IOException {
         String xml =
-                "<Request action=\"Login\"><Param name=\"Username\">1234</Param><Param name=\"Password\">12312312</Param><Param name=\"MacAddr\"></Param></Request>";
+                "<Request action=\"Login\"><Param name=\"Username\">002</Param><Param name=\"Password\">123123</Param><Param name=\"MacAddr\"></Param></Request>";
         request(xml);
     }
 
     // @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml =
-                "<Request action=\"OpenTable\" sid=\"529550102823303\"><Param name=\"TableId\">2</Param></Request>";
+        String xml = "<Request action=\"OpenTable\" sid=\"942639363592600\"><Param name=\"TableId\">002</Param></Request>";
         request(xml);
     }
 
@@ -90,10 +88,15 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    @Test
+    // @Test
     public void SwitchTable() throws ParseException, IOException {
-        String xml =
-                "<Request action=\"SwitchTable\" sid=\"529550102823303\"><Param name=\"TableId\">1</Param></Request>";
+        String xml = "<Request action=\"SwitchTable\" sid=\"529550102823303\"><Param name=\"TableId\">1</Param></Request>";
+        request(xml);
+    }
+
+    // @Test
+    public void getOrderList() throws ParseException, IOException {
+        String xml = "<Request action=\"GetOrderList\" sid=\"942639363592600\"/>";
         request(xml);
     }
 }
