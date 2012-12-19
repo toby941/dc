@@ -54,7 +54,8 @@ public class ApiControllerTest {
 
     // @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml = "<Request action=\"OpenTable\" sid=\"997582243409166\"><Param name=\"TableId\">234</Param></Request>";
+        String xml =
+                "<Request action=\"OpenTable\" sid=\"529550102823303\"><Param name=\"TableId\">2</Param></Request>";
         request(xml);
     }
 
@@ -91,7 +92,8 @@ public class ApiControllerTest {
 
     @Test
     public void SwitchTable() throws ParseException, IOException {
-        String xml = "<Request action=\"SwitchTable\" sid=\"102357358329241\"><Param name=\"TableId\">1</Param></Request>";
+        String xml =
+                "<Request action=\"SwitchTable\" sid=\"529550102823303\"><Param name=\"TableId\">1</Param></Request>";
         request(xml);
     }
 }
