@@ -1,7 +1,7 @@
 ##[台号或账单号(7)空格(10)整单备注(12)空格(4)时间(8)\n]{1}
 ##[台号或账单(7)菜号(5)数量(4)制作方法(12)套餐号(2)等叫标记(1)时间(8)数量(4)客人数(4)\n]{1-N}
 DC   008
-$ipad.tableId                                  $!ipad.time
+$ipad.tableId                              $!ipad.time
 #foreach( $menu in $xml.menus )
-$ipad.tableId    $menu.id $menu.count                    0 $menu.time      12  
+$ipad.tableId $menu.id $menu.count                    0 $menu.time      12  
 #end

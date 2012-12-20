@@ -117,6 +117,14 @@ public class IpadRequestInfo extends BaseModel {
             tableId = "0";
         }
 
+        return fillLength(tableId, 7, false);
+    }
+
+    public String getOpenTableId() {
+        if (tableId == null) {
+            tableId = "0";
+        }
+
         return fillLength(tableId, 4, false);
     }
 

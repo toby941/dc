@@ -14,15 +14,16 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.junit.Test;
 
 public class ApiControllerTest {
 
     // private static String host = "http://192.168.1.13:9091";
 
     // private static String host = "http://zhaduir.vicp.cc:8092";
-    private static String host = "http://517ps.eicp.net:8092";
+    // private static String host = "http://517ps.eicp.net:8092";
 
-    // private static String host = "http://127.0.0.1:9091";
+    private static String host = "http://127.0.0.1:9091";
 
     public void request(String xml) throws ParseException, IOException {
         HttpClient httpclient = new DefaultHttpClient();
@@ -51,9 +52,9 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    // @Test
+    @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml = "<Request action=\"OpenTable\" sid=\"942639363592600\"><Param name=\"TableId\">002</Param></Request>";
+        String xml = "<Request action=\"OpenTable\" sid=\"1355910288984155000\"><Param name=\"TableId\">002</Param></Request>";
         request(xml);
     }
 
