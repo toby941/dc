@@ -1,6 +1,7 @@
 package com.dc.web.controller;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +26,16 @@ public class ApiControllerTest {
 
     // private static String host = "http://127.0.0.1:9091";
 
-    public void request(String xml) throws ParseException, IOException {
+    public String request(String xml) throws ParseException, IOException {
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(host + "/api/ipad");
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("psentity", xml));
         httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
         HttpResponse response = httpclient.execute(httpPost);
-        System.err.println(EntityUtils.toString(response.getEntity()));
+        String result = EntityUtils.toString(response.getEntity());
+        System.err.println(result);
+        return result;
     }
 
     // @Test
@@ -45,6 +48,22 @@ public class ApiControllerTest {
         System.err.println(EntityUtils.toString(response.getEntity()));
     }
 
+    @Test
+    public void testAll() throws ClientProtocolException, IOException {
+        String login =
+                "<Request action=\"Login\"><Param name=\"Username\">002</Param><Param name=\"Password\">123123</Param><Param name=\"MacAddr\"></Param></Request>";
+        String openTable = "<Request action=\"OpenTable\" sid=\"{0}\"><Param name=\"TableId\">007</Param></Request>";
+        String orderMenu =
+                "<Request action=\"OrderMenu\" sid=\"{0}\"><Menu id=\"03008\" pqty=\"1\" /><Menu id=\"03002\" pqty=\"1\" /><Menu id=\"05001\" pqty=\"1\" /><Menu id=\"05002\" pqty=\"1\" /><Menu id=\"02003\" pqty=\"1\" /></Request>";
+        String orderList = "<Request action=\"GetOrderList\" sid=\"{0}\"/>";
+        String loginResult = request(login);
+        String sid = loginResult.substring(loginResult.indexOf("<SessionId>") + 11, loginResult.indexOf("</SessionId>"));
+        System.out.println("sid: " + sid);
+        request(MessageFormat.format(openTable, sid));
+        request(MessageFormat.format(orderMenu, sid));
+        request(MessageFormat.format(orderList, sid));
+    }
+
     // @Test
     public void testLogin() throws ClientProtocolException, IOException {
         String xml =
@@ -54,7 +73,7 @@ public class ApiControllerTest {
 
     // @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml = "<Request action=\"OpenTable\" sid=\"82281956389078\"><Param name=\"TableId\">007</Param></Request>";
+        String xml = "<Request action=\"OpenTable\" sid=\"128981443250446\"><Param name=\"TableId\">007</Param></Request>";
         request(xml);
     }
 
@@ -79,7 +98,7 @@ public class ApiControllerTest {
     // @Test
     public void orderMenu() throws ParseException, IOException {
         String xml =
-                "<Request action=\"OrderMenu\" sid=\"82281956389078\"><Menu id=\"03008\" pqty=\"1\" /><Menu id=\"03002\" pqty=\"1\" /><Menu id=\"05001\" pqty=\"1\" /><Menu id=\"05002\" pqty=\"1\" /><Menu id=\"02003\" pqty=\"1\" /></Request>";
+                "<Request action=\"OrderMenu\" sid=\"128981443250446\"><Menu id=\"03008\" pqty=\"1\" /><Menu id=\"03002\" pqty=\"1\" /><Menu id=\"05001\" pqty=\"1\" /><Menu id=\"05002\" pqty=\"1\" /><Menu id=\"02003\" pqty=\"1\" /></Request>";
         request(xml);
     }
 
@@ -95,9 +114,9 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    @Test
+    // @Test
     public void getOrderList() throws ParseException, IOException {
-        String xml = "<Request action=\"GetOrderList\" sid=\"82281956389078\"/>";
+        String xml = "<Request action=\"GetOrderList\" sid=\"128981443250446\"/>";
         request(xml);
     }
 }
