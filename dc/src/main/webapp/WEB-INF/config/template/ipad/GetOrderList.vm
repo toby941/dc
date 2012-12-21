@@ -1,6 +1,6 @@
 <OrderInfo size="$!courseLists.size" errInfo="$!errInfo">
 #foreach( $course in $courseLists)
-      <Menu id="$!course.courseNo" rate="" sumprice="$course.sumPrice" price="$course.coursePrice" unit="$!course.courseUnit" count="$!course.courseCount" qty="" pqty="" rebate="" status="1">
+      <Menu id="$!course.courseNo" rate="" sumprice="$!course.sumPrice" price="$course.coursePrice" unit="$!course.courseUnit" count="$!course.courseCount" qty="" pqty="" rebate="" status="1">
         <Name>$course.courseName</Name>
         <Desc></Desc>
       </Menu>  

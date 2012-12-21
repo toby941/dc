@@ -21,9 +21,9 @@ public class ApiControllerTest {
     // private static String host = "http://192.168.1.13:9091";
 
     // private static String host = "http://zhaduir.vicp.cc:8092";
-    // private static String host = "http://517ps.eicp.net:8092";
+    private static String host = "http://517ps.eicp.net:8092";
 
-    private static String host = "http://127.0.0.1:9091";
+    // private static String host = "http://127.0.0.1:9091";
 
     public void request(String xml) throws ParseException, IOException {
         HttpClient httpclient = new DefaultHttpClient();
@@ -52,9 +52,9 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    @Test
+    // @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml = "<Request action=\"OpenTable\" sid=\"1355910288984155000\"><Param name=\"TableId\">002</Param></Request>";
+        String xml = "<Request action=\"OpenTable\" sid=\"82281956389078\"><Param name=\"TableId\">007</Param></Request>";
         request(xml);
     }
 
@@ -66,7 +66,7 @@ public class ApiControllerTest {
 
     // @Test
     public void testGetMenuList() throws ParseException, IOException {
-        String xml = "<Request action=\"GetMenuList\" sid=\"1354800969512599000\"/>";
+        String xml = "<Request action=\"GetMenuList\" sid=\"78467407737991\"/>";
         request(xml);
     }
 
@@ -79,7 +79,7 @@ public class ApiControllerTest {
     // @Test
     public void orderMenu() throws ParseException, IOException {
         String xml =
-                "<Request action=\"OrderMenu\" sid=\"102357358329241\"><Menu id=\"03008\" pqty=\"1\" /><Menu id=\"03002\" pqty=\"1\" /><Menu id=\"05001\" pqty=\"1\" /><Menu id=\"05002\" pqty=\"1\" /><Menu id=\"02003\" pqty=\"1\" /></Request>";
+                "<Request action=\"OrderMenu\" sid=\"82281956389078\"><Menu id=\"03008\" pqty=\"1\" /><Menu id=\"03002\" pqty=\"1\" /><Menu id=\"05001\" pqty=\"1\" /><Menu id=\"05002\" pqty=\"1\" /><Menu id=\"02003\" pqty=\"1\" /></Request>";
         request(xml);
     }
 
@@ -95,9 +95,9 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    // @Test
+    @Test
     public void getOrderList() throws ParseException, IOException {
-        String xml = "<Request action=\"GetOrderList\" sid=\"942639363592600\"/>";
+        String xml = "<Request action=\"GetOrderList\" sid=\"82281956389078\"/>";
         request(xml);
     }
 }

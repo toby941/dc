@@ -39,8 +39,7 @@ public class Course {
     public String getCoursePrice() {
         if (StringUtils.isNotBlank(coursePrice)) {
             return coursePrice.substring(0, coursePrice.length() - 1);
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -182,6 +181,14 @@ public class Course {
         this.courseCount = count;
         this.coursePrice = price;
         this.sumPrice = sumPrice;
+    }
+
+    public String getCourseCount() {
+        return courseCount;
+    }
+
+    public void setCourseCount(String courseCount) {
+        this.courseCount = courseCount;
     }
 
     public Course() {
