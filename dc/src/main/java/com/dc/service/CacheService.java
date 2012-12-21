@@ -16,6 +16,8 @@ public class CacheService {
 
     private static Map<String, Course> cacheCourseMap;
 
+    private static Map<String, Course> cacheCourseMapKeyName;
+
     /**
      * 存储tableid->sid用于换台
      */
@@ -47,10 +49,21 @@ public class CacheService {
         }
     }
 
+    public static Course getCourseByName(String courseName) {
+        if (cacheCourseMapKeyName != null) {
+            return cacheCourseMapKeyName.get(courseName);
+        }
+        else {
+            return null;
+        }
+    }
+
     public static void saveCourse(List<Course> courseList) {
         cacheCourseMap = new HashMap<String, Course>();
+        cacheCourseMapKeyName = new HashMap<String, Course>();
         for (Course c : courseList) {
             cacheCourseMap.put(c.getCourseNo(), c);
+            cacheCourseMapKeyName.put(c.getCourseName().trim(), c);
         }
     }
 
