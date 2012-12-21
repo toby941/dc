@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -33,6 +35,16 @@ public class RxResponseResolve {
 
     @Autowired
     private PageService pageService;
+
+    @PostConstruct
+    private void init() {
+        try {
+            resolveGetSyncFileList();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 解析RX入口
