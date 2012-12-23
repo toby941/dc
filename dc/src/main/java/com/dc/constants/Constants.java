@@ -21,6 +21,11 @@ public class Constants {
     public static String REQUEST_OpenTable = "OpenTable";
     // 销台
     public static String REQUEST_CloseTable = "CloseTable";
+
+    /**
+     * 换台
+     */
+    public static String REQUEST_SwitchTable = "SwitchTable";
     /**
      * MenuInfo
      */
@@ -37,6 +42,10 @@ public class Constants {
     public static String REQUEST_UrgeCate = "UrgeCate";
     // 缓菜
     public static String REQUEST_DelayCate = "DelayCate";
+    /**
+     * 划菜
+     */
+    public static String REQUEST_DishChecked = "DishChecked";
     // 结帐
     public static String REQUEST_Checkout = "Checkout";
     /**

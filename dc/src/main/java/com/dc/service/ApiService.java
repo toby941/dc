@@ -160,13 +160,13 @@ public class ApiService {
         Long nanoTime = System.nanoTime();
         log.warn("########handle begin id :" + nanoTime);
         Map<String, Object> model = new HashMap<String, Object>();
+        IpadRequestInfo requestInfo = getTxRequest(requestXml);
+        model.put("ipad", requestInfo);
         if (requestXml.isNeedWriteTx()) {
-            IpadRequestInfo requestInfo = getTxRequest(requestXml);
             String txRequestContent = merge4TxRequest(requestInfo, requestXml);
             System.out.println("write content: " + txRequestContent);
             log.warn("write content: " + txRequestContent);
             writeToFile(txRequestContent);
-            model.put("ipad", requestInfo);
             if (devMode || SocketClient.noticeTCP()) {
                 List<String> responseFile = readFile(readFile);
                 log.warn("read content: " + ReflectionToStringBuilder.toString(responseFile));
@@ -175,6 +175,10 @@ public class ApiService {
         } else {
             model = rxResponseResolve.resolve(null, model, "操作失败", requestXml);
         }
+        if (requestXml.isNeedClearSession() && (model.get("errInfo") == null)) {
+            CacheService.clearSid(requestInfo.getSid());
+        }
+
         response = VelocityEngineUtils.mergeTemplateIntoString(ipadResponseVelocityEngine, requestXml.getIpadResponseAction() + ".vm", model);
         log.warn("return ipad: " + response);
         log.warn("########handle end  id :" + nanoTime);
@@ -227,10 +231,18 @@ public class ApiService {
         IpadRequestInfo requestInfo = null;
         if (StringUtils.isNotBlank(sid)) {
             requestInfo = CacheService.getIpadInfo(sid);
+
+            // if
+            // (!Constants.REQUEST_SwitchTable.equals(requestXml.getAction())) {
+            log.error("old tableId:" + requestInfo.getTableId() + "  new table id" + requestXml.getParamValue("TableId"));
+            System.err.println("old tableId:" + requestInfo.getTableId() + "  new table id" + requestXml.getParamValue("TableId"));
             requestInfo.addParams(requestXml);
+            log.error("new  tableId:" + requestInfo.getTableId());
+            System.err.println("new  tableId:" + requestInfo.getTableId());
             if (requestInfo.getTableId() != null && requestInfo.getTableId().length() > 0) {
                 CacheService.saveSid(requestInfo.getTableId(), sid);
             }
+            // }
         } else {
             requestInfo = new IpadRequestInfo(requestXml);
         }

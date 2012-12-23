@@ -43,8 +43,7 @@ public class RxResponseResolve {
      * @param requestXml
      * @return
      */
-    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip,
-            RequestXml requestXml) {
+    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip, RequestXml requestXml) {
         boolean resolveResult = false;
         String sid = null;
         List<IpadRequestInfo> resolveList = new ArrayList<IpadRequestInfo>();
@@ -60,23 +59,17 @@ public class RxResponseResolve {
                 log.error("handle " + t.toString() + " " + method.getName());
                 if ("java.util.List<com.dc.model.IpadRequestInfo>".equals(t.toString())) {
                     resolveList = (List<IpadRequestInfo>) ReflectionUtils.invokeMethod(method, this, responseFile);
-                }
-                else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
+                } else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
                     courseTabs = (List<CourseTab>) ReflectionUtils.invokeMethod(method, this);
-                }
-                else if ("java.util.List<com.dc.model.CourseFile>".equals(t.toString())) {
+                } else if ("java.util.List<com.dc.model.CourseFile>".equals(t.toString())) {
                     courseFiles = (List<CourseFile>) ReflectionUtils.invokeMethod(method, this);
-                }
-                else if ("java.util.List<com.dc.model.Course>".equals(t.toString())) {
+                } else if ("java.util.List<com.dc.model.Course>".equals(t.toString())) {
                     courseLists = (List<Course>) ReflectionUtils.invokeMethod(method, this, responseFile);
-                }
-                else if ("java.util.List<com.dc.model.CourseTable>".equals(t.toString())) {
+                } else if ("java.util.List<com.dc.model.CourseTable>".equals(t.toString())) {
                     courseTables = (List<CourseTable>) ReflectionUtils.invokeMethod(method, this);
-                }
-                else if ("class java.lang.String".equals(t.toString())) {
+                } else if ("class java.lang.String".equals(t.toString())) {
                     sid = (String) ReflectionUtils.invokeMethod(method, this, requestXml.getParamValue("TableId"));
-                }
-                else {
+                } else {
                     resolveResult = (Boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
                 }
                 break;
@@ -91,14 +84,12 @@ public class RxResponseResolve {
         model.put("courseTables", courseTables);
         model.put("courseTabSize", courseTabs.size());
         model.put("sid", sid);
-        if (sid == null && !resolveResult && resolveList.size() == 0 && CollectionUtils.isEmpty(courseFiles)
-                && CollectionUtils.isEmpty(courseTabs) && CollectionUtils.isEmpty(courseTables)
-                && CollectionUtils.isEmpty(courseLists)) {
+        if (sid == null && !resolveResult && resolveList.size() == 0 && CollectionUtils.isEmpty(courseFiles) && CollectionUtils.isEmpty(courseTabs)
+                && CollectionUtils.isEmpty(courseTables) && courseLists == null) {
             String responesError = getErrInLine(responseFile);
             if (responesError != null && responesError.length() > 0) {
                 model = putErrorMsg(model, responesError);
-            }
-            else {
+            } else {
                 model = putErrorMsg(model, errorTip);
             }
         }
@@ -216,8 +207,7 @@ public class RxResponseResolve {
             String responseStr = courseFiles.get(i);
             Matcher m = coursePattern.matcher(responseStr);
             if (m.matches() && (m.groupCount() == 7)) {
-                Course c =
-                        new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
+                Course c = new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
                 List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo());
                 c.setFiles(fileList);
                 courses.add(c);
@@ -261,6 +251,15 @@ public class RxResponseResolve {
         return true;
     }
 
+    public boolean resolveDishChecked(List<String> responseFile) {
+        if (CollectionUtils.isNotEmpty(responseFile) && responseFile.size() >= 2) {
+            if (responseFile.get(1).startsWith("划单成功")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<CourseFile> resolveGetSyncFileList() throws IOException {
         List<Course> courseList = pageService.getAllCourse();
         List<CourseFile> courseFiles = new ArrayList<CourseFile>();
@@ -277,22 +276,36 @@ public class RxResponseResolve {
      * 解析上位软件返回的已点菜单
      * 
      * @param responseFile
-     * @return
+     * @return null 解析失败 empty尚未点单
      * @throws IOException
      */
     public List<Course> resolveGetOrderList(List<String> responseFile) throws IOException {
-        List<Course> courseList = new ArrayList<Course>();
+        boolean isDone = false;
         if (CollectionUtils.isNotEmpty(responseFile) && responseFile.size() >= 2) {
-            Pattern coursePattern = Pattern.compile("(\\d+)\\D+(\\d+)=(\\d+)");
-            for (int i = 2; i < responseFile.size(); i = i + 2) {
-                String name = responseFile.get(i).replace("⊙", "").trim();
-                String secondLine = responseFile.get(i + 1).trim();
-                Matcher m = coursePattern.matcher(secondLine);
-                if (m.matches() && m.groupCount() == 3) {
-                    Course c = new Course(name, m.group(1), m.group(2), m.group(3));
-                    courseList.add(c);
+            if (responseFile.get(1).contains(("成功"))) {
+                isDone = true;
+            }
+        }
+        if (!isDone) {
+            return null;
+        }
+
+        List<Course> courseList = new ArrayList<Course>();
+        try {
+            if (CollectionUtils.isNotEmpty(responseFile) && responseFile.size() >= 2) {
+                Pattern coursePattern = Pattern.compile("(\\d+)\\D+(\\d+)=(\\d+)");
+                for (int i = 2; i < responseFile.size(); i = i + 2) {
+                    String name = responseFile.get(i).replace("⊙", "").trim();
+                    String secondLine = responseFile.get(i + 1).trim();
+                    Matcher m = coursePattern.matcher(secondLine);
+                    if (m.matches() && m.groupCount() == 3) {
+                        Course c = new Course(name, m.group(1), m.group(2), m.group(3));
+                        courseList.add(c);
+                    }
                 }
             }
+        } catch (Exception e) {
+            log.error("resolveGetOrderList error", e);
         }
         if (courseList.isEmpty()) {
             Pattern coursePattern = Pattern.compile("(\\S+)\\s+(\\d+)\\s+(\\S+)\\s*");
@@ -319,7 +332,6 @@ public class RxResponseResolve {
 
             }
         }
-
         return courseList;
     }
 

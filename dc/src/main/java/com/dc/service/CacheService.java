@@ -26,9 +26,14 @@ public class CacheService {
     public static String getSid(String tableId) {
         if (cacheTableIdAndSidMap != null) {
             return cacheTableIdAndSidMap.get(tableId.trim());
-        }
-        else {
+        } else {
             return null;
+        }
+    }
+
+    public static void clearSid(String sid) {
+        if (cacheIpadInfo != null) {
+            cacheIpadInfo.remove(sid);
         }
     }
 
@@ -43,8 +48,7 @@ public class CacheService {
     public static Course getCourse(String courseNo) {
         if (cacheCourseMap != null) {
             return cacheCourseMap.get(courseNo);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -52,8 +56,7 @@ public class CacheService {
     public static Course getCourseByName(String courseName) {
         if (cacheCourseMapKeyName != null) {
             return cacheCourseMapKeyName.get(courseName);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -70,8 +73,7 @@ public class CacheService {
     public static IpadRequestInfo getIpadInfo(String sid) {
         if (cacheIpadInfo != null) {
             return cacheIpadInfo.get(sid);
-        }
-        else {
+        } else {
             return null;
         }
     }
