@@ -1,0 +1,4 @@
+GT   008
+#foreach( $menu in $xml.menus )
+$ipad.tableId $menu.id   
+#end

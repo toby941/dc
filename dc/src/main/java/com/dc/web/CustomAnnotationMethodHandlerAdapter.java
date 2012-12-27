@@ -109,16 +109,22 @@ import org.springframework.web.servlet.support.WebContentGenerator;
 import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.WebUtils;
 
+import com.dc.utils.MacUtils;
+
 /**
- * Implementation of the {@link org.springframework.web.servlet.HandlerAdapter} interface that maps handler methods
- * based on HTTP paths, HTTP methods and request parameters expressed through the {@link RequestMapping} annotation.
+ * Implementation of the {@link org.springframework.web.servlet.HandlerAdapter}
+ * interface that maps handler methods based on HTTP paths, HTTP methods and
+ * request parameters expressed through the {@link RequestMapping} annotation.
  * <p>
- * Supports request parameter binding through the {@link RequestParam} annotation. Also supports the
- * {@link ModelAttribute} annotation for exposing model attribute values to the view, as well as {@link InitBinder} for
- * binder initialization methods and {@link SessionAttributes} for automatic session management of specific attributes.
+ * Supports request parameter binding through the {@link RequestParam}
+ * annotation. Also supports the {@link ModelAttribute} annotation for exposing
+ * model attribute values to the view, as well as {@link InitBinder} for binder
+ * initialization methods and {@link SessionAttributes} for automatic session
+ * management of specific attributes.
  * <p>
- * This adapter can be customized through various bean properties. A common use case is to apply shared binder
- * initialization logic through a custom {@link #setWebBindingInitializer WebBindingInitializer}.
+ * This adapter can be customized through various bean properties. A common use
+ * case is to apply shared binder initialization logic through a custom
+ * {@link #setWebBindingInitializer WebBindingInitializer}.
  * 
  * @author Juergen Hoeller
  * @author Arjen Poutsma
@@ -128,8 +134,7 @@ import org.springframework.web.util.WebUtils;
  * @see #setWebBindingInitializer
  * @see #setSessionAttributeStore
  */
-public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator implements HandlerAdapter, Ordered,
-        BeanFactoryAware {
+public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator implements HandlerAdapter, Ordered, BeanFactoryAware {
 
     /**
      * Log category to use when no mapped handler is found for a request.
@@ -173,8 +178,7 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
 
     private BeanExpressionContext expressionContext;
 
-    private final Map<Class<?>, ServletHandlerMethodResolver> methodResolverCache =
-            new HashMap<Class<?>, ServletHandlerMethodResolver>();
+    private final Map<Class<?>, ServletHandlerMethodResolver> methodResolverCache = new HashMap<Class<?>, ServletHandlerMethodResolver>();
 
     public CustomAnnotationMethodHandlerAdapter() {
         // no restriction of HTTP methods by default
@@ -184,13 +188,15 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
         stringHttpMessageConverter.setWriteAcceptCharset(false);
         messageConverters =
-                new HttpMessageConverter[]{new ByteArrayHttpMessageConverter(), stringHttpMessageConverter,
-                        new SourceHttpMessageConverter(), new XmlAwareFormHttpMessageConverter()};
+                new HttpMessageConverter[] { new ByteArrayHttpMessageConverter(), stringHttpMessageConverter, new SourceHttpMessageConverter(),
+                        new XmlAwareFormHttpMessageConverter() };
     }
 
     /**
-     * Set if URL lookup should always use the full path within the current servlet context. Else, the path within the
-     * current servlet mapping is used if applicable (that is, in the case of a ".../*" servlet mapping in web.xml).
+     * Set if URL lookup should always use the full path within the current
+     * servlet context. Else, the path within the current servlet mapping is
+     * used if applicable (that is, in the case of a ".../*" servlet mapping in
+     * web.xml).
      * <p>
      * Default is "false".
      * 
@@ -201,10 +207,12 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     }
 
     /**
-     * Set if context path and request URI should be URL-decoded. Both are returned <i>undecoded</i> by the Servlet API,
-     * in contrast to the servlet path.
+     * Set if context path and request URI should be URL-decoded. Both are
+     * returned <i>undecoded</i> by the Servlet API, in contrast to the servlet
+     * path.
      * <p>
-     * Uses either the request encoding or the default encoding according to the Servlet spec (ISO-8859-1).
+     * Uses either the request encoding or the default encoding according to the
+     * Servlet spec (ISO-8859-1).
      * 
      * @see org.springframework.web.util.UrlPathHelper#setUrlDecode
      */
@@ -215,8 +223,9 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     /**
      * Set the UrlPathHelper to use for resolution of lookup paths.
      * <p>
-     * Use this to override the default UrlPathHelper with a custom subclass, or to share common UrlPathHelper settings
-     * across multiple HandlerMappings and HandlerAdapters.
+     * Use this to override the default UrlPathHelper with a custom subclass, or
+     * to share common UrlPathHelper settings across multiple HandlerMappings
+     * and HandlerAdapters.
      */
     public void setUrlPathHelper(UrlPathHelper urlPathHelper) {
         Assert.notNull(urlPathHelper, "UrlPathHelper must not be null");
@@ -224,7 +233,8 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     }
 
     /**
-     * Set the PathMatcher implementation to use for matching URL paths against registered URL patterns.
+     * Set the PathMatcher implementation to use for matching URL paths against
+     * registered URL patterns.
      * <p>
      * Default is {@link org.springframework.util.AntPathMatcher}.
      */
@@ -234,18 +244,19 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     }
 
     /**
-     * Set the MethodNameResolver to use for resolving default handler methods (carrying an empty
-     * <code>@RequestMapping</code> annotation).
+     * Set the MethodNameResolver to use for resolving default handler methods
+     * (carrying an empty <code>@RequestMapping</code> annotation).
      * <p>
-     * Will only kick in when the handler method cannot be resolved uniquely through the annotation metadata already.
+     * Will only kick in when the handler method cannot be resolved uniquely
+     * through the annotation metadata already.
      */
     public void setMethodNameResolver(MethodNameResolver methodNameResolver) {
         this.methodNameResolver = methodNameResolver;
     }
 
     /**
-     * Specify a WebBindingInitializer which will apply pre-configured configuration to every DataBinder that this
-     * controller uses.
+     * Specify a WebBindingInitializer which will apply pre-configured
+     * configuration to every DataBinder that this controller uses.
      */
     public void setWebBindingInitializer(WebBindingInitializer webBindingInitializer) {
         this.webBindingInitializer = webBindingInitializer;
@@ -254,8 +265,10 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     /**
      * Specify the strategy to store session attributes with.
      * <p>
-     * Default is {@link org.springframework.web.bind.support.DefaultSessionAttributeStore} , storing session attributes
-     * in the HttpSession, using the same attribute name as in the model.
+     * Default is
+     * {@link org.springframework.web.bind.support.DefaultSessionAttributeStore}
+     * , storing session attributes in the HttpSession, using the same attribute
+     * name as in the model.
      */
     public void setSessionAttributeStore(SessionAttributeStore sessionAttributeStore) {
         Assert.notNull(sessionAttributeStore, "SessionAttributeStore must not be null");
@@ -263,11 +276,13 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     }
 
     /**
-     * Cache content produced by <code>@SessionAttributes</code> annotated handlers for the given number of seconds.
-     * Default is 0, preventing caching completely.
+     * Cache content produced by <code>@SessionAttributes</code> annotated
+     * handlers for the given number of seconds. Default is 0, preventing
+     * caching completely.
      * <p>
-     * In contrast to the "cacheSeconds" property which will apply to all general handlers (but not to
-     * <code>@SessionAttributes</code> annotated handlers), this setting will apply to <code>@SessionAttributes</code>
+     * In contrast to the "cacheSeconds" property which will apply to all
+     * general handlers (but not to <code>@SessionAttributes</code> annotated
+     * handlers), this setting will apply to <code>@SessionAttributes</code>
      * annotated handlers only.
      * 
      * @see #setCacheSeconds
@@ -278,19 +293,23 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     }
 
     /**
-     * Set if controller execution should be synchronized on the session, to serialize parallel invocations from the
-     * same client.
+     * Set if controller execution should be synchronized on the session, to
+     * serialize parallel invocations from the same client.
      * <p>
-     * More specifically, the execution of the <code>handleRequestInternal</code> method will get synchronized if this
-     * flag is "true". The best available session mutex will be used for the synchronization; ideally, this will be a
-     * mutex exposed by HttpSessionMutexListener.
+     * More specifically, the execution of the
+     * <code>handleRequestInternal</code> method will get synchronized if this
+     * flag is "true". The best available session mutex will be used for the
+     * synchronization; ideally, this will be a mutex exposed by
+     * HttpSessionMutexListener.
      * <p>
-     * The session mutex is guaranteed to be the same object during the entire lifetime of the session, available under
-     * the key defined by the <code>SESSION_MUTEX_ATTRIBUTE</code> constant. It serves as a safe reference to
-     * synchronize on for locking on the current session.
+     * The session mutex is guaranteed to be the same object during the entire
+     * lifetime of the session, available under the key defined by the
+     * <code>SESSION_MUTEX_ATTRIBUTE</code> constant. It serves as a safe
+     * reference to synchronize on for locking on the current session.
      * <p>
-     * In many cases, the HttpSession reference itself is a safe mutex as well, since it will always be the same object
-     * reference for the same active logical session. However, this is not guaranteed across different servlet
+     * In many cases, the HttpSession reference itself is a safe mutex as well,
+     * since it will always be the same object reference for the same active
+     * logical session. However, this is not guaranteed across different servlet
      * containers; the only 100% safe way is a session mutex.
      * 
      * @see org.springframework.web.util.HttpSessionMutexListener
@@ -301,50 +320,58 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     }
 
     /**
-     * Set the ParameterNameDiscoverer to use for resolving method parameter names if needed (e.g. for default attribute
-     * names).
+     * Set the ParameterNameDiscoverer to use for resolving method parameter
+     * names if needed (e.g. for default attribute names).
      * <p>
-     * Default is a {@link org.springframework.core.LocalVariableTableParameterNameDiscoverer}.
+     * Default is a
+     * {@link org.springframework.core.LocalVariableTableParameterNameDiscoverer}.
      */
     public void setParameterNameDiscoverer(ParameterNameDiscoverer parameterNameDiscoverer) {
         this.parameterNameDiscoverer = parameterNameDiscoverer;
     }
 
     /**
-     * Set a custom WebArgumentResolvers to use for special method parameter types.
+     * Set a custom WebArgumentResolvers to use for special method parameter
+     * types.
      * <p>
-     * Such a custom WebArgumentResolver will kick in first, having a chance to resolve an argument value before the
-     * standard argument handling kicks in.
+     * Such a custom WebArgumentResolver will kick in first, having a chance to
+     * resolve an argument value before the standard argument handling kicks in.
      */
     public void setCustomArgumentResolver(WebArgumentResolver argumentResolver) {
-        customArgumentResolvers = new WebArgumentResolver[]{argumentResolver};
+        customArgumentResolvers = new WebArgumentResolver[] { argumentResolver };
     }
 
     /**
-     * Set one or more custom WebArgumentResolvers to use for special method parameter types.
+     * Set one or more custom WebArgumentResolvers to use for special method
+     * parameter types.
      * <p>
-     * Any such custom WebArgumentResolver will kick in first, having a chance to resolve an argument value before the
-     * standard argument handling kicks in.
+     * Any such custom WebArgumentResolver will kick in first, having a chance
+     * to resolve an argument value before the standard argument handling kicks
+     * in.
      */
     public void setCustomArgumentResolvers(WebArgumentResolver[] argumentResolvers) {
         customArgumentResolvers = argumentResolvers;
     }
 
     /**
-     * Set a custom ModelAndViewResolvers to use for special method return types.
+     * Set a custom ModelAndViewResolvers to use for special method return
+     * types.
      * <p>
-     * Such a custom ModelAndViewResolver will kick in first, having a chance to resolve a return value before the
-     * standard ModelAndView handling kicks in.
+     * Such a custom ModelAndViewResolver will kick in first, having a chance to
+     * resolve a return value before the standard ModelAndView handling kicks
+     * in.
      */
     public void setCustomModelAndViewResolver(ModelAndViewResolver customModelAndViewResolver) {
-        customModelAndViewResolvers = new ModelAndViewResolver[]{customModelAndViewResolver};
+        customModelAndViewResolvers = new ModelAndViewResolver[] { customModelAndViewResolver };
     }
 
     /**
-     * Set one or more custom ModelAndViewResolvers to use for special method return types.
+     * Set one or more custom ModelAndViewResolvers to use for special method
+     * return types.
      * <p>
-     * Any such custom ModelAndViewResolver will kick in first, having a chance to resolve a return value before the
-     * standard ModelAndView handling kicks in.
+     * Any such custom ModelAndViewResolver will kick in first, having a chance
+     * to resolve a return value before the standard ModelAndView handling kicks
+     * in.
      */
     public void setCustomModelAndViewResolvers(ModelAndViewResolver[] customModelAndViewResolvers) {
         this.customModelAndViewResolvers = customModelAndViewResolvers;
@@ -353,14 +380,16 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     /**
      * Set the message body converters to use.
      * <p>
-     * These converters are used to convert from and to HTTP requests and responses.
+     * These converters are used to convert from and to HTTP requests and
+     * responses.
      */
     public void setMessageConverters(HttpMessageConverter<?>[] messageConverters) {
         this.messageConverters = messageConverters;
     }
 
     /**
-     * Return the message body converters that this adapter has been configured with.
+     * Return the message body converters that this adapter has been configured
+     * with.
      */
     public HttpMessageConverter<?>[] getMessageConverters() {
         return messageConverters;
@@ -369,7 +398,8 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     /**
      * Specify the order value for this HandlerAdapter bean.
      * <p>
-     * Default value is <code>Integer.MAX_VALUE</code>, meaning that it's non-ordered.
+     * Default value is <code>Integer.MAX_VALUE</code>, meaning that it's
+     * non-ordered.
      * 
      * @see org.springframework.core.Ordered#getOrder()
      */
@@ -396,14 +426,12 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     }
 
     @Override
-    public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (AnnotationUtils.findAnnotation(handler.getClass(), SessionAttributes.class) != null) {
             // Always prevent caching in case of session attribute management.
             checkAndPrepare(request, response, cacheSecondsForSessionAttributeHandlers, true);
             // Prepare cached set of session attributes names.
-        }
-        else {
+        } else {
             // Uses configured default cacheSeconds setting.
             checkAndPrepare(request, response, true);
         }
@@ -422,9 +450,13 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
         return invokeHandlerMethod(request, response, handler);
     }
 
-    protected ModelAndView invokeHandlerMethod(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    protected ModelAndView invokeHandlerMethod(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         ModelAndView mav = null;
+        // 执行请求前做安全校验是否本机授权过
+        if (!MacUtils.isLocalMac()) {
+            return new ModelAndView("redirect:/errorDocs/404.jsp");
+        }
+
         ServletHandlerMethodResolver methodResolver = getMethodResolver(handler);
         Method handlerMethod = methodResolver.resolveHandlerMethod(request);
         String methodName = handlerMethod.getName();
@@ -485,27 +517,28 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     /**
      * Template method for creating a new ServletRequestDataBinder instance.
      * <p>
-     * The default implementation creates a standard ServletRequestDataBinder. This can be overridden for custom
-     * ServletRequestDataBinder subclasses.
+     * The default implementation creates a standard ServletRequestDataBinder.
+     * This can be overridden for custom ServletRequestDataBinder subclasses.
      * 
      * @param request current HTTP request
-     * @param target the target object to bind onto (or <code>null</code> if the binder is just used to convert a plain
-     *            parameter value)
+     * @param target the target object to bind onto (or <code>null</code> if the
+     *            binder is just used to convert a plain parameter value)
      * @param objectName the objectName of the target object
      * @return the ServletRequestDataBinder instance to use
      * @throws Exception in case of invalid state or arguments
      * @see ServletRequestDataBinder#bind(javax.servlet.ServletRequest)
-     * @see ServletRequestDataBinder#convertIfNecessary(Object, Class, org.springframework.core.MethodParameter)
+     * @see ServletRequestDataBinder#convertIfNecessary(Object, Class,
+     *      org.springframework.core.MethodParameter)
      */
-    protected ServletRequestDataBinder createBinder(HttpServletRequest request, Object target, String objectName)
-            throws Exception {
+    protected ServletRequestDataBinder createBinder(HttpServletRequest request, Object target, String objectName) throws Exception {
         return new ServletRequestDataBinder(target, objectName);
     }
 
     /**
      * Template method for creating a new HttpInputMessage instance.
      * <p>
-     * The default implementation creates a standard {@link ServletServerHttpRequest}. This can be overridden for custom
+     * The default implementation creates a standard
+     * {@link ServletServerHttpRequest}. This can be overridden for custom
      * {@code HttpInputMessage} implementations
      * 
      * @param servletRequest current HTTP request
@@ -519,8 +552,9 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     /**
      * Template method for creating a new HttpOuputMessage instance.
      * <p>
-     * The default implementation creates a standard {@link ServletServerHttpResponse}. This can be overridden for
-     * custom {@code HttpOutputMessage} implementations
+     * The default implementation creates a standard
+     * {@link ServletServerHttpResponse}. This can be overridden for custom
+     * {@code HttpOutputMessage} implementations
      * 
      * @param servletResponse current HTTP response
      * @return the HttpInputMessage instance to use
@@ -571,8 +605,7 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
         public Method resolveHandlerMethod(HttpServletRequest request) throws ServletException {
             String lookupPath = urlPathHelper.getLookupPathForRequest(request);
             Comparator<String> pathComparator = pathMatcher.getPatternComparator(lookupPath);
-            Map<RequestSpecificMappingInfo, Method> targetHandlerMethods =
-                    new LinkedHashMap<RequestSpecificMappingInfo, Method>();
+            Map<RequestSpecificMappingInfo, Method> targetHandlerMethods = new LinkedHashMap<RequestSpecificMappingInfo, Method>();
             Set<String> allowedMethods = new LinkedHashSet<String>(7);
             String resolvedMethodName = null;
             for (Method handlerMethod : getHandlerMethods()) {
@@ -588,8 +621,7 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
                             if (mappingInfo.matches(request)) {
                                 match = true;
                                 mappingInfo.addMatchedPattern(combinedPattern);
-                            }
-                            else {
+                            } else {
                                 if (!mappingInfo.matchesRequestMethod(request)) {
                                     allowedMethods.addAll(mappingInfo.methodNames());
                                 }
@@ -598,15 +630,13 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
                         }
                     }
                     mappingInfo.sortMatchedPatterns(pathComparator);
-                }
-                else {
+                } else {
                     // No paths specified: parameter match sufficient.
                     match = mappingInfo.matches(request);
-                    if (match && mappingInfo.getMethodCount() == 0 && mappingInfo.getParamCount() == 0
-                            && resolvedMethodName != null && !resolvedMethodName.equals(handlerMethod.getName())) {
+                    if (match && mappingInfo.getMethodCount() == 0 && mappingInfo.getParamCount() == 0 && resolvedMethodName != null
+                            && !resolvedMethodName.equals(handlerMethod.getName())) {
                         match = false;
-                    }
-                    else {
+                    } else {
                         if (!mappingInfo.matchesRequestMethod(request)) {
                             allowedMethods.addAll(mappingInfo.methodNames());
                         }
@@ -627,32 +657,23 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
                                     if (oldMappedMethod != null) {
                                         targetHandlerMethods.put(mappingInfo, oldMappedMethod);
                                         oldMappedMethod = null;
-                                    }
-                                    else {
+                                    } else {
                                         targetHandlerMethods.remove(mappingInfo);
                                     }
                                 }
                             }
                         }
                         if (oldMappedMethod != null) {
-                            throw new IllegalStateException(
-                                    "Ambiguous handler methods mapped for HTTP path '"
-                                            + lookupPath
-                                            + "': {"
-                                            + oldMappedMethod
-                                            + ", "
-                                            + handlerMethod
-                                            + "}. If you intend to handle the same path in multiple methods, then factor "
-                                            + "them out into a dedicated handler class with that path mapped at the type level!");
+                            throw new IllegalStateException("Ambiguous handler methods mapped for HTTP path '" + lookupPath + "': {" + oldMappedMethod + ", "
+                                    + handlerMethod + "}. If you intend to handle the same path in multiple methods, then factor "
+                                    + "them out into a dedicated handler class with that path mapped at the type level!");
                         }
                     }
                 }
             }
             if (!targetHandlerMethods.isEmpty()) {
-                List<RequestSpecificMappingInfo> matches =
-                        new ArrayList<RequestSpecificMappingInfo>(targetHandlerMethods.keySet());
-                RequestSpecificMappingInfoComparator requestMappingInfoComparator =
-                        new RequestSpecificMappingInfoComparator(pathComparator, request);
+                List<RequestSpecificMappingInfo> matches = new ArrayList<RequestSpecificMappingInfo>(targetHandlerMethods.keySet());
+                RequestSpecificMappingInfoComparator requestMappingInfoComparator = new RequestSpecificMappingInfoComparator(pathComparator, request);
                 Collections.sort(matches, requestMappingInfoComparator);
                 RequestSpecificMappingInfo bestMappingMatch = matches.get(0);
                 String bestMatchedPath = bestMappingMatch.bestMatchedPattern();
@@ -660,26 +681,27 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
                     extractHandlerMethodUriTemplates(bestMatchedPath, lookupPath, request);
                 }
                 return targetHandlerMethods.get(bestMappingMatch);
-            }
-            else {
+            } else {
                 if (!allowedMethods.isEmpty()) {
-                    throw new HttpRequestMethodNotSupportedException(request.getMethod(),
-                            StringUtils.toStringArray(allowedMethods));
+                    throw new HttpRequestMethodNotSupportedException(request.getMethod(), StringUtils.toStringArray(allowedMethods));
                 }
-                throw new NoSuchRequestHandlingMethodException(lookupPath, request.getMethod(),
-                        request.getParameterMap());
+                throw new NoSuchRequestHandlingMethodException(lookupPath, request.getMethod(), request.getParameterMap());
             }
         }
 
         /**
-         * Determines the combined pattern for the given methodLevelPattern and path.
+         * Determines the combined pattern for the given methodLevelPattern and
+         * path.
          * <p>
          * Uses the following algorithm:
          * <ol>
          * <li>If there is a type-level mapping with path information, it is
-         * {@linkplain PathMatcher#combine(String, String) combined} with the method-level pattern.</li>
-         * <li>If there is a {@linkplain HandlerMapping#BEST_MATCHING_PATTERN_ATTRIBUTE best matching pattern} in the
-         * request, it is combined with the method-level pattern.</li>
+         * {@linkplain PathMatcher#combine(String, String) combined} with the
+         * method-level pattern.</li>
+         * <li>If there is a
+         * {@linkplain HandlerMapping#BEST_MATCHING_PATTERN_ATTRIBUTE best
+         * matching pattern} in the request, it is combined with the
+         * method-level pattern.</li>
          * <li>Otherwise, the method-level pattern is returned.</li>
          * </ol>
          */
@@ -726,16 +748,13 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
         }
 
         @SuppressWarnings("unchecked")
-        private void extractHandlerMethodUriTemplates(String mappedPattern, String lookupPath,
-                HttpServletRequest request) {
+        private void extractHandlerMethodUriTemplates(String mappedPattern, String lookupPath, HttpServletRequest request) {
 
-            Map<String, String> variables =
-                    (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+            Map<String, String> variables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
             int patternVariableCount = StringUtils.countOccurrencesOf(mappedPattern, "{");
 
-            if ((variables == null || patternVariableCount != variables.size())
-                    && pathMatcher.match(mappedPattern, lookupPath)) {
+            if ((variables == null || patternVariableCount != variables.size()) && pathMatcher.match(mappedPattern, lookupPath)) {
                 variables = pathMatcher.extractUriTemplateVariables(mappedPattern, lookupPath);
                 request.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, variables);
             }
@@ -750,8 +769,7 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
         private boolean responseArgumentUsed = false;
 
         private ServletHandlerMethodInvoker(HandlerMethodResolver resolver) {
-            super(resolver, webBindingInitializer, sessionAttributeStore, parameterNameDiscoverer,
-                    customArgumentResolvers, messageConverters);
+            super(resolver, webBindingInitializer, sessionAttributeStore, parameterNameDiscoverer, customArgumentResolvers, messageConverters);
         }
 
         @Override
@@ -765,11 +783,9 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
         }
 
         @Override
-        protected WebDataBinder createBinder(NativeWebRequest webRequest, Object target, String objectName)
-                throws Exception {
+        protected WebDataBinder createBinder(NativeWebRequest webRequest, Object target, String objectName) throws Exception {
 
-            return CustomAnnotationMethodHandlerAdapter.this.createBinder(
-                    webRequest.getNativeRequest(HttpServletRequest.class), target, objectName);
+            return CustomAnnotationMethodHandlerAdapter.this.createBinder(webRequest.getNativeRequest(HttpServletRequest.class), target, objectName);
         }
 
         @Override
@@ -804,30 +820,25 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
         }
 
         @Override
-        protected Object resolveCookieValue(String cookieName, Class paramType, NativeWebRequest webRequest)
-                throws Exception {
+        protected Object resolveCookieValue(String cookieName, Class paramType, NativeWebRequest webRequest) throws Exception {
 
             HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
             Cookie cookieValue = WebUtils.getCookie(servletRequest, cookieName);
             if (Cookie.class.isAssignableFrom(paramType)) {
                 return cookieValue;
-            }
-            else if (cookieValue != null) {
+            } else if (cookieValue != null) {
                 return urlPathHelper.decodeRequestString(servletRequest, cookieValue.getValue());
-            }
-            else {
+            } else {
                 return null;
             }
         }
 
         @Override
-        @SuppressWarnings({"unchecked"})
-        protected String resolvePathVariable(String pathVarName, Class paramType, NativeWebRequest webRequest)
-                throws Exception {
+        @SuppressWarnings({ "unchecked" })
+        protected String resolvePathVariable(String pathVarName, Class paramType, NativeWebRequest webRequest) throws Exception {
 
             HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
-            Map<String, String> uriTemplateVariables =
-                    (Map<String, String>) servletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+            Map<String, String> uriTemplateVariables = (Map<String, String>) servletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
             if (uriTemplateVariables == null || !uriTemplateVariables.containsKey(pathVarName)) {
                 throw new IllegalStateException("Could not find @PathVariable [" + pathVarName + "] in @RequestMapping");
             }
@@ -839,44 +850,33 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
             HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
             HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
 
-            if (ServletRequest.class.isAssignableFrom(parameterType)
-                    || MultipartRequest.class.isAssignableFrom(parameterType)) {
+            if (ServletRequest.class.isAssignableFrom(parameterType) || MultipartRequest.class.isAssignableFrom(parameterType)) {
                 Object nativeRequest = webRequest.getNativeRequest(parameterType);
                 if (nativeRequest == null) {
-                    throw new IllegalStateException("Current request is not of type [" + parameterType.getName()
-                            + "]: " + request);
+                    throw new IllegalStateException("Current request is not of type [" + parameterType.getName() + "]: " + request);
                 }
                 return nativeRequest;
-            }
-            else if (ServletResponse.class.isAssignableFrom(parameterType)) {
+            } else if (ServletResponse.class.isAssignableFrom(parameterType)) {
                 responseArgumentUsed = true;
                 Object nativeResponse = webRequest.getNativeResponse(parameterType);
                 if (nativeResponse == null) {
-                    throw new IllegalStateException("Current response is not of type [" + parameterType.getName()
-                            + "]: " + response);
+                    throw new IllegalStateException("Current response is not of type [" + parameterType.getName() + "]: " + response);
                 }
                 return nativeResponse;
-            }
-            else if (HttpSession.class.isAssignableFrom(parameterType)) {
+            } else if (HttpSession.class.isAssignableFrom(parameterType)) {
                 return request.getSession();
-            }
-            else if (Principal.class.isAssignableFrom(parameterType)) {
+            } else if (Principal.class.isAssignableFrom(parameterType)) {
                 return request.getUserPrincipal();
-            }
-            else if (Locale.class.equals(parameterType)) {
+            } else if (Locale.class.equals(parameterType)) {
                 return RequestContextUtils.getLocale(request);
-            }
-            else if (InputStream.class.isAssignableFrom(parameterType)) {
+            } else if (InputStream.class.isAssignableFrom(parameterType)) {
                 return request.getInputStream();
-            }
-            else if (Reader.class.isAssignableFrom(parameterType)) {
+            } else if (Reader.class.isAssignableFrom(parameterType)) {
                 return request.getReader();
-            }
-            else if (OutputStream.class.isAssignableFrom(parameterType)) {
+            } else if (OutputStream.class.isAssignableFrom(parameterType)) {
                 responseArgumentUsed = true;
                 return response.getOutputStream();
-            }
-            else if (Writer.class.isAssignableFrom(parameterType)) {
+            } else if (Writer.class.isAssignableFrom(parameterType)) {
                 responseArgumentUsed = true;
                 return response.getWriter();
             }
@@ -884,8 +884,8 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
         }
 
         @SuppressWarnings("unchecked")
-        public ModelAndView getModelAndView(Method handlerMethod, Class handlerType, Object returnValue,
-                ExtendedModelMap implicitModel, ServletWebRequest webRequest) throws Exception {
+        public ModelAndView getModelAndView(Method handlerMethod, Class handlerType, Object returnValue, ExtendedModelMap implicitModel,
+                ServletWebRequest webRequest) throws Exception {
 
             ResponseStatus responseStatusAnn = AnnotationUtils.findAnnotation(handlerMethod, ResponseStatus.class);
             if (responseStatusAnn != null) {
@@ -893,8 +893,7 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
                 String reason = responseStatusAnn.reason();
                 if (!StringUtils.hasText(reason)) {
                     webRequest.getResponse().setStatus(responseStatus.value());
-                }
-                else {
+                } else {
                     webRequest.getResponse().sendError(responseStatus.value(), reason);
                 }
 
@@ -907,9 +906,7 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
             // Invoke custom resolvers if present...
             if (customModelAndViewResolvers != null) {
                 for (ModelAndViewResolver mavResolver : customModelAndViewResolvers) {
-                    ModelAndView mav =
-                            mavResolver.resolveModelAndView(handlerMethod, handlerType, returnValue, implicitModel,
-                                    webRequest);
+                    ModelAndView mav = mavResolver.resolveModelAndView(handlerMethod, handlerType, returnValue, implicitModel, webRequest);
                     if (mav != ModelAndViewResolver.UNRESOLVED) {
                         return mav;
                     }
@@ -919,48 +916,37 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
             if (returnValue instanceof HttpEntity) {
                 handleHttpEntityResponse((HttpEntity<?>) returnValue, webRequest);
                 return null;
-            }
-            else if (AnnotationUtils.findAnnotation(handlerMethod, ResponseBody.class) != null) {
+            } else if (AnnotationUtils.findAnnotation(handlerMethod, ResponseBody.class) != null) {
                 handleResponseBody(returnValue, webRequest);
                 return null;
-            }
-            else if (returnValue instanceof ModelAndView) {
+            } else if (returnValue instanceof ModelAndView) {
                 ModelAndView mav = (ModelAndView) returnValue;
                 mav.getModelMap().mergeAttributes(implicitModel);
                 return mav;
-            }
-            else if (returnValue instanceof Model) {
+            } else if (returnValue instanceof Model) {
                 return new ModelAndView().addAllObjects(implicitModel).addAllObjects(((Model) returnValue).asMap());
-            }
-            else if (returnValue instanceof View) {
+            } else if (returnValue instanceof View) {
                 return new ModelAndView((View) returnValue).addAllObjects(implicitModel);
-            }
-            else if (AnnotationUtils.findAnnotation(handlerMethod, ModelAttribute.class) != null) {
+            } else if (AnnotationUtils.findAnnotation(handlerMethod, ModelAttribute.class) != null) {
                 addReturnValueAsModelAttribute(handlerMethod, handlerType, returnValue, implicitModel);
                 return new ModelAndView().addAllObjects(implicitModel);
-            }
-            else if (returnValue instanceof Map) {
+            } else if (returnValue instanceof Map) {
                 return new ModelAndView().addAllObjects(implicitModel).addAllObjects((Map) returnValue);
-            }
-            else if (returnValue instanceof String) {
+            } else if (returnValue instanceof String) {
                 return new ModelAndView((String) returnValue).addAllObjects(implicitModel);
-            }
-            else if (returnValue == null) {
+            } else if (returnValue == null) {
                 // Either returned null or was 'void' return.
                 if (responseArgumentUsed || webRequest.isNotModified()) {
                     return null;
-                }
-                else {
+                } else {
                     // Assuming view name translation...
                     return new ModelAndView().addAllObjects(implicitModel);
                 }
-            }
-            else if (!BeanUtils.isSimpleProperty(returnValue.getClass())) {
+            } else if (!BeanUtils.isSimpleProperty(returnValue.getClass())) {
                 // Assume a single model attribute...
                 addReturnValueAsModelAttribute(handlerMethod, handlerType, returnValue, implicitModel);
                 return new ModelAndView().addAllObjects(implicitModel);
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Invalid handler method return value: " + returnValue);
             }
         }
@@ -974,8 +960,7 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
             writeWithMessageConverters(returnValue, inputMessage, outputMessage);
         }
 
-        private void handleHttpEntityResponse(HttpEntity<?> responseEntity, ServletWebRequest webRequest)
-                throws Exception {
+        private void handleHttpEntityResponse(HttpEntity<?> responseEntity, ServletWebRequest webRequest) throws Exception {
             if (responseEntity == null) {
                 return;
             }
@@ -991,16 +976,15 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
             Object body = responseEntity.getBody();
             if (body != null) {
                 writeWithMessageConverters(body, inputMessage, outputMessage);
-            }
-            else {
+            } else {
                 // flush headers
                 outputMessage.getBody();
             }
         }
 
         @SuppressWarnings("unchecked")
-        private void writeWithMessageConverters(Object returnValue, HttpInputMessage inputMessage,
-                HttpOutputMessage outputMessage) throws IOException, HttpMediaTypeNotAcceptableException {
+        private void writeWithMessageConverters(Object returnValue, HttpInputMessage inputMessage, HttpOutputMessage outputMessage) throws IOException,
+                HttpMediaTypeNotAcceptableException {
             List<MediaType> acceptedMediaTypes = inputMessage.getHeaders().getAccept();
             if (acceptedMediaTypes.isEmpty()) {
                 acceptedMediaTypes = Collections.singletonList(MediaType.ALL);
@@ -1018,8 +1002,7 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
                                 if (contentType == null) {
                                     contentType = acceptedMediaType;
                                 }
-                                logger.debug("Written [" + returnValue + "] as \"" + contentType + "\" using ["
-                                        + messageConverter + "]");
+                                logger.debug("Written [" + returnValue + "] as \"" + contentType + "\" using [" + messageConverter + "]");
                             }
                             responseArgumentUsed = true;
                             return;
@@ -1102,14 +1085,13 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
         @Override
         public boolean equals(Object obj) {
             RequestMappingInfo other = (RequestMappingInfo) obj;
-            return (Arrays.equals(patterns, other.patterns) && Arrays.equals(methods, other.methods)
-                    && Arrays.equals(params, other.params) && Arrays.equals(headers, other.headers));
+            return (Arrays.equals(patterns, other.patterns) && Arrays.equals(methods, other.methods) && Arrays.equals(params, other.params) && Arrays.equals(
+                    headers, other.headers));
         }
 
         @Override
         public int hashCode() {
-            return (Arrays.hashCode(patterns) * 23 + Arrays.hashCode(methods) * 29 + Arrays.hashCode(params) * 31 + Arrays
-                    .hashCode(headers));
+            return (Arrays.hashCode(patterns) * 23 + Arrays.hashCode(methods) * 29 + Arrays.hashCode(params) * 31 + Arrays.hashCode(headers));
         }
 
         @Override
@@ -1161,17 +1143,20 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
     }
 
     /**
-     * Comparator capable of sorting {@link RequestSpecificMappingInfo}s (RHIs) so that sorting a list with this
-     * comparator will result in:
+     * Comparator capable of sorting {@link RequestSpecificMappingInfo}s (RHIs)
+     * so that sorting a list with this comparator will result in:
      * <ul>
-     * <li>RHIs with {@linkplain CustomAnnotationMethodHandlerAdapter.RequestSpecificMappingInfo#matchedPatterns better
-     * matched paths} take prescedence over those with a weaker match (as expressed by the
-     * {@linkplain PathMatcher#getPatternComparator(String) path pattern comparator}.) Typically, this means that
-     * patterns without wild cards and uri templates will be ordered before those without.</li>
-     * <li>RHIs with one single {@linkplain RequestMappingInfo#methods request method} will be ordered before those
-     * without a method, or with more than one method.</li>
-     * <li>RHIs with more {@linkplain RequestMappingInfo#params request parameters} will be ordered before those with
-     * less parameters</li>
+     * <li>RHIs with
+     * {@linkplain CustomAnnotationMethodHandlerAdapter.RequestSpecificMappingInfo#matchedPatterns
+     * better matched paths} take prescedence over those with a weaker match (as
+     * expressed by the {@linkplain PathMatcher#getPatternComparator(String)
+     * path pattern comparator}.) Typically, this means that patterns without
+     * wild cards and uri templates will be ordered before those without.</li>
+     * <li>RHIs with one single {@linkplain RequestMappingInfo#methods request
+     * method} will be ordered before those without a method, or with more than
+     * one method.</li>
+     * <li>RHIs with more {@linkplain RequestMappingInfo#params request
+     * parameters} will be ordered before those with less parameters</li>
      * </ul>
      */
     static class RequestSpecificMappingInfoComparator implements Comparator<RequestSpecificMappingInfo> {
@@ -1209,14 +1194,11 @@ public class CustomAnnotationMethodHandlerAdapter extends WebContentGenerator im
             int info2MethodCount = info2.getMethodCount();
             if (info1MethodCount == 0 && info2MethodCount > 0) {
                 return 1;
-            }
-            else if (info2MethodCount == 0 && info1MethodCount > 0) {
+            } else if (info2MethodCount == 0 && info1MethodCount > 0) {
                 return -1;
-            }
-            else if (info1MethodCount == 1 & info2MethodCount > 1) {
+            } else if (info1MethodCount == 1 & info2MethodCount > 1) {
                 return -1;
-            }
-            else if (info2MethodCount == 1 & info1MethodCount > 1) {
+            } else if (info2MethodCount == 1 & info1MethodCount > 1) {
                 return 1;
             }
             return 0;

@@ -191,6 +191,15 @@ public class RequestXml {
         }
     }
 
+    /**
+     * 客户端请求是否需要清理session
+     * 
+     * @return
+     */
+    public boolean isNeedClearSession() {
+        return Constants.REQUEST_Logout.equals(action) || Constants.REQUEST_CloseTable.equals(action);
+    }
+
     public String getAction() {
         return action;
     }
@@ -273,9 +282,9 @@ public class RequestXml {
     }
 
     public boolean isNormalAction() {
-        return Constants.REQUEST_Logout.equals(action) || Constants.REQUEST_OpenTable.equals(action) || Constants.REQUEST_CloseTable.equals(action)
-                || Constants.REQUEST_OrderMenu.equals(action) || Constants.REQUEST_UrgeCate.equals(action) || Constants.REQUEST_DelayCate.equals(action)
-                || Constants.REQUEST_Checkout.equals(action);
+        return Constants.REQUEST_DishChecked.equals(action) || Constants.REQUEST_Logout.equals(action) || Constants.REQUEST_OpenTable.equals(action)
+                || Constants.REQUEST_CloseTable.equals(action) || Constants.REQUEST_OrderMenu.equals(action) || Constants.REQUEST_UrgeCate.equals(action)
+                || Constants.REQUEST_DelayCate.equals(action) || Constants.REQUEST_Checkout.equals(action);
     }
 
     /**
@@ -284,7 +293,8 @@ public class RequestXml {
      * @return
      */
     public boolean isNeedWriteTx() {
-        return Constants.REQUEST_GetOrderList.equals(action) || Constants.REQUEST_LOGIN.equals(action) || Constants.REQUEST_OpenTable.equals(action)
+        return Constants.REQUEST_DelayCate.equals(action) || Constants.REQUEST_UrgeCate.equals(action) || Constants.REQUEST_DishChecked.equals(action)
+                || Constants.REQUEST_GetOrderList.equals(action) || Constants.REQUEST_LOGIN.equals(action) || Constants.REQUEST_OpenTable.equals(action)
                 || Constants.REQUEST_CloseTable.equals(action) || Constants.REQUEST_GetTables.equals(action) || Constants.REQUEST_OrderMenu.equals(action)
                 || Constants.REQUEST_Checkout.equals(action);
     }
