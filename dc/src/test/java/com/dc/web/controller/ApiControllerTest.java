@@ -60,8 +60,8 @@ public class ApiControllerTest {
         String sid = loginResult.substring(loginResult.indexOf("<SessionId>") + 11, loginResult.indexOf("</SessionId>"));
         System.out.println("sid: " + sid);
         request(MessageFormat.format(openTable, sid));
-        request(MessageFormat.format(orderMenu, sid));
-        request(MessageFormat.format(orderList, sid));
+        // request(MessageFormat.format(orderMenu, sid));
+        // request(MessageFormat.format(orderList, sid));
     }
 
     // @Test
@@ -71,9 +71,9 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    @Test
+    // @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml = "<Request action=\"OpenTable\" sid=\"1356100768933652000\"><Param name=\"TableId\">003</Param></Request>";
+        String xml = "<Request action=\"OpenTable\" sid=\"1357228873132371000\"><Param name=\"TableId\">003</Param></Request>";
         request(xml);
     }
 
@@ -85,7 +85,13 @@ public class ApiControllerTest {
 
     // @Test
     public void testGetMenuList() throws ParseException, IOException {
-        String xml = "<Request action=\"GetMenuList\" sid=\"78467407737991\"/>";
+        String xml = "<Request action=\"GetMenuList\" sid=\"1357228250385100000\"/>";
+        request(xml);
+    }
+
+    @Test
+    public void testGetMenuPackageList() throws ParseException, IOException {
+        String xml = "<Request action=\"GetMenuPackageList\" sid=\"1357228873132371000\"/>";
         request(xml);
     }
 

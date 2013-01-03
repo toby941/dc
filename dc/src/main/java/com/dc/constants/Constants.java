@@ -35,6 +35,12 @@ public class Constants {
     public static String REQUEST_GetOrderList = "GetOrderList";
     // 点菜下单
     public static String REQUEST_OrderMenu = "OrderMenu";
+
+    /**
+     * 套餐列表获取
+     */
+    public static String REQUEST_GetMenuPackage = "GetMenuPackageList";
+
     /**
      * Services
      */

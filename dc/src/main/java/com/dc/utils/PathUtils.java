@@ -17,4 +17,14 @@ public class PathUtils {
      */
     public static String courseTablePath;
 
+    /**
+     * 菜品套餐表
+     */
+    public static String coursePackageFilepath;
+
+    /**
+     * 菜品套餐内容表
+     */
+    public static String coursePackageContentFilePath;
+
 }

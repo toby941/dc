@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -21,6 +19,8 @@ import org.springframework.util.ReflectionUtils;
 
 import com.dc.model.Course;
 import com.dc.model.CourseFile;
+import com.dc.model.CoursePackage;
+import com.dc.model.CoursePackageItem;
 import com.dc.model.CourseTab;
 import com.dc.model.CourseTable;
 import com.dc.model.IpadRequestInfo;
@@ -35,16 +35,6 @@ public class RxResponseResolve {
 
     @Autowired
     private PageService pageService;
-
-    @PostConstruct
-    private void init() {
-        try {
-            resolveGetSyncFileList();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * 解析RX入口
@@ -61,8 +51,9 @@ public class RxResponseResolve {
         List<IpadRequestInfo> resolveList = new ArrayList<IpadRequestInfo>();
         List<CourseTab> courseTabs = new ArrayList<CourseTab>();
         List<CourseFile> courseFiles = new ArrayList<CourseFile>();
-        List<Course> courseLists = new ArrayList<Course>();
+        List<Course> courseLists = null;
         List<CourseTable> courseTables = new ArrayList<CourseTable>();
+        List<CoursePackage> coursePackages = new ArrayList<CoursePackage>();
         Class c = this.getClass();
         Method[] ms = c.getDeclaredMethods();
         for (Method method : ms) {
@@ -79,6 +70,8 @@ public class RxResponseResolve {
                     courseLists = (List<Course>) ReflectionUtils.invokeMethod(method, this, responseFile);
                 } else if ("java.util.List<com.dc.model.CourseTable>".equals(t.toString())) {
                     courseTables = (List<CourseTable>) ReflectionUtils.invokeMethod(method, this);
+                } else if ("java.util.List<com.dc.model.CoursePackage>".equals(t.toString())) {
+                    coursePackages = (List<CoursePackage>) ReflectionUtils.invokeMethod(method, this);
                 } else if ("class java.lang.String".equals(t.toString())) {
                     sid = (String) ReflectionUtils.invokeMethod(method, this, requestXml.getParamValue("TableId"));
                 } else {
@@ -95,9 +88,10 @@ public class RxResponseResolve {
         model.put("courseLists", courseLists);
         model.put("courseTables", courseTables);
         model.put("courseTabSize", courseTabs.size());
+        model.put("coursePackages", coursePackages);
         model.put("sid", sid);
-        if (sid == null && !resolveResult && resolveList.size() == 0 && CollectionUtils.isEmpty(courseFiles) && CollectionUtils.isEmpty(courseTabs)
-                && CollectionUtils.isEmpty(courseTables) && courseLists == null) {
+        if (sid == null && !resolveResult && resolveList.size() == 0 && CollectionUtils.isEmpty(coursePackages) && CollectionUtils.isEmpty(courseFiles)
+                && CollectionUtils.isEmpty(courseTabs) && CollectionUtils.isEmpty(courseTables) && courseLists == null) {
             String responesError = getErrInLine(responseFile);
             if (responesError != null && responesError.length() > 0) {
                 model = putErrorMsg(model, responesError);
@@ -184,28 +178,88 @@ public class RxResponseResolve {
 
     // 一楼\\新建房间001 6 一楼\\新建房间031 12
     public static void main(String[] args) throws IOException {
-        Pattern p = Pattern.compile("(\\S+)\\s+(\\d+)\\s+(\\S+)\\s+");
-        String s = "白兰地         1 份 ";
-        System.out.println(p.matcher(s).matches());
-        System.out.println(p.matcher(s).groupCount());
+        Pattern coursePackageItemPattern = Pattern.compile("(\\d{2})(\\d{5})\\s*(\\S*)\\s*(\\S*).*");
+        Pattern coursePackagePattern = Pattern.compile("(\\d{2})(.{0,20}).*");
+        String s1 = "0101001        1     6.00份  ";
+        String s2 = "01new                 ";
+        System.out.println(coursePackageItemPattern.matcher(s1).matches());
+        System.out.println(coursePackagePattern.matcher(s2).matches());
     }
 
     /**
-     * 不请求TX 本地处理
+     * 获取套餐内容项 不请求TX 本地处理
+     * 
+     * @throws IOException
+     */
+    public List<CoursePackage> resolveGetMenuPackageList() throws IOException {
+        File couresPackageFile = new File(PathUtils.coursePackageFilepath);
+        File coursePackageContentFile = new File(PathUtils.coursePackageContentFilePath);
+        // 菜品套餐内容表
+        // 套餐编号（2位）菜品编号（5位）数量（9位）单价（9位）单位（4位）缺省选中标志（1位）套餐菜组号（2位）
+        // 0101001 1 6.00份
+
+        // 菜品套餐表
+        // 套餐编号（2位）套餐名称（20位）
+        // 01new
+        Pattern coursePackageItemPattern = Pattern.compile("(\\d{2})(\\d{5})\\s*(\\S*)\\s*(\\S*).*");
+        Pattern coursePackagePattern = Pattern.compile("(\\d{2})(.{0,20}).*");
+
+        List<String> couresPackageFiles = FileUtils.readLines(couresPackageFile, "GBK");
+        List<String> coursePackageContentFiles = FileUtils.readLines(coursePackageContentFile, "GBK");
+
+        List<CoursePackageItem> coursePackageItems = new ArrayList<CoursePackageItem>();
+        List<CoursePackage> coursePackages = new ArrayList<CoursePackage>();
+
+        for (int i = 0; i < coursePackageContentFiles.size(); i++) {
+            String responseStr = coursePackageContentFiles.get(i);
+            Matcher m = coursePackageItemPattern.matcher(responseStr);
+            if (m.matches() && (m.groupCount() == 4)) {
+                CoursePackageItem c = new CoursePackageItem(m.group(1), m.group(2), m.group(3), m.group(4));
+                List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo());
+                c.setFiles(fileList);
+                coursePackageItems.add(c);
+            }
+        }
+
+        for (int i = 0; i < couresPackageFiles.size(); i++) {
+            String responseStr = couresPackageFiles.get(i);
+            Matcher m = coursePackagePattern.matcher(responseStr);
+            if (m.matches() && (m.groupCount() == 2)) {
+                CoursePackage cp = new CoursePackage(m.group(1), m.group(2));
+                coursePackages.add(cp);
+            }
+        }
+
+        for (CoursePackage cp : coursePackages) {
+            String id = cp.getId();
+            List<CoursePackageItem> subCoursePackageItems = new ArrayList<CoursePackageItem>();
+            for (CoursePackageItem c : coursePackageItems) {
+                if (c.getId().equals(id)) {
+                    subCoursePackageItems.add(c);
+                }
+            }
+            cp.setCoursePackageItems(subCoursePackageItems);
+        }
+
+        return coursePackages;
+    }
+
+    /**
+     * 获取菜单 不请求TX 本地处理
      * 
      * @param responseFile
      * @return
      * @throws IOException
      */
-    // 0100101凉拌黄瓜 6.00份 份 0 LBHG
-    // 菜品编号(5)类别号(2)中文名称(20)单价(9)单位(4)重量单位(4)需要确认重量否(1)制作要求(45)拼音编码(10)
-    // 菜品类别(2)类别名称(20)
-    // 01凉菜
 
     public List<CourseTab> resolveGetMenuList() throws IOException {
         File courseFile = new File(PathUtils.courseFilePath);
         File courseTabFile = new File(PathUtils.courseTabPath);
-
+        // 0100101凉拌黄瓜 6.00份 份 0 LBHG
+        // 菜品编号(5)类别号(2)中文名称(20)单价(9)单位(4)重量单位(4)需要确认重量否(1)制作要求(45)拼音编码(10)
+        // 菜品类别(2)类别名称(20)
+        // 01凉菜
+        // 套餐列表
         Pattern coursePattern = Pattern.compile("(\\d{5})(\\d{2})(\\S*)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*).*");
         Pattern courseTabPattern = Pattern.compile("(\\d*)(\\D*)");
 

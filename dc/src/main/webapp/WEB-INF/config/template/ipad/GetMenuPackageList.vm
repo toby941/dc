@@ -1,0 +1,16 @@
+<PackageInfo size="$!coursePackages.size()" errInfo="$!errInfo">
+#foreach( $coursePackage in $coursePackages)
+ <PackageNode>
+    <Package id="$coursePackage.id">$coursePackage.coursePackageName</Tab>
+    <ItemInfo size="$coursePackage.coursePackageItems.size()" errInfo="">
+    #foreach( $item in $coursePackage.coursePackageItems)
+      <Item id="$item.idShow" rate="" price="$item.coursePrice" unit="$!item.courseUnit" qty="$!item.courseCount" pqty="" rebate="" status="1">
+        #foreach( $file in $course.files)
+        <File type="$file.type" format="" size="" src="$file.src" synctime="$file.synctime"></File>
+         #end
+      </Item>  
+      #end
+    </ItemInfo>
+  </PackageNode>
+#end
+</PackageInfo>

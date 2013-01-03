@@ -66,6 +66,8 @@ public class ApiService {
     private String courseFilePath;
     private String courseTabFilePath;
     private String courseTablePath;
+    private String coursePackageFilePath;
+    private String coursePackageContentFilePath;
 
     public String getCourseTablePath() {
         return courseTablePath;
@@ -199,7 +201,16 @@ public class ApiService {
         PathUtils.courseFilePath = this.courseFilePath;
         PathUtils.courseTabPath = this.courseTabFilePath;
         PathUtils.courseTablePath = this.courseTablePath;
+        PathUtils.coursePackageFilepath = this.coursePackageFilePath;
+        PathUtils.coursePackageContentFilePath = this.coursePackageContentFilePath;
         final Integer port4FileUpdate = resurceUpdateSocketPort;
+
+        try {
+            rxResponseResolve.resolveGetSyncFileList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         try {
             Thread t = new Thread() {
                 @Override
@@ -218,6 +229,22 @@ public class ApiService {
             e.printStackTrace();
         }
 
+    }
+
+    public String getCoursePackageFilePath() {
+        return coursePackageFilePath;
+    }
+
+    public void setCoursePackageFilePath(String coursePackageFilePath) {
+        this.coursePackageFilePath = coursePackageFilePath;
+    }
+
+    public String getCoursePackageContentFilePath() {
+        return coursePackageContentFilePath;
+    }
+
+    public void setCoursePackageContentFilePath(String coursePackageContentFilePath) {
+        this.coursePackageContentFilePath = coursePackageContentFilePath;
     }
 
     /**

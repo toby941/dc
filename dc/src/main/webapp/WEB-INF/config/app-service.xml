@@ -54,7 +54,6 @@
     </bean>
     
     
-    
     <bean name="apiService" class="com.dc.service.ApiService" init-method="init">
     <property name="writeFile" value="${writeFile}"></property>
     <property name="readFile" value="${readFile}"></property>
@@ -64,11 +63,13 @@
      <property name="updateFileNames" value="${updateFileNames}"></property>
      <property name="devMode" value="${devMode}"></property>
      <property name="courseFilePath" value="${courseFilePath}"></property>
-      <property name="courseTabFilePath" value="${courseTabFilePath}"></property>
-      <property name="courseTablePath" value="${courseTablePath}"></property>
+     <property name="courseTabFilePath" value="${courseTabFilePath}"></property>
+     <property name="courseTablePath" value="${courseTablePath}"></property>
+     <property name="coursePackageFilePath" value="${coursePackageFilePath}"></property>
+     <property name="coursePackageContentFilePath" value="${coursePackageContentFilePath}"></property>
     </bean>
     
-     <bean name="pageService" class="com.dc.service.PageService">
+     <bean name="pageService" class="com.dc.service.PageService" >
      <property name="descFloderPath" value="${descFloderPath}"></property>
       <property name="photoFloderPath" value="${photoFloderPath}"></property>
       <property name="host" value="${host}"></property>
