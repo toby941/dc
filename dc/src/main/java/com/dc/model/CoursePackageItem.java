@@ -30,6 +30,20 @@ public class CoursePackageItem {
      * 数量(9)
      */
     private String courseCount;
+
+    /**
+     * 中文名称(20)
+     */
+    private String courseName;
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
     /**
      * 单价(9)
      */

@@ -2,15 +2,16 @@
 #foreach( $coursePackage in $coursePackages)
  <PackageNode>
     <Package id="$coursePackage.id">$coursePackage.coursePackageName</Tab>
-    <ItemInfo size="$coursePackage.coursePackageItems.size()" errInfo="">
+    <MenuInfo size="$coursePackage.coursePackageItems.size()" errInfo="">
     #foreach( $item in $coursePackage.coursePackageItems)
-      <Item id="$item.idShow" rate="" price="$item.coursePrice" unit="$!item.courseUnit" qty="$!item.courseCount" pqty="" rebate="" status="1">
+      <Menu id="$item.idShow" rate="" price="$item.coursePrice" unit="$!item.courseUnit" qty="$!item.courseCount" pqty="" rebate="" status="1">
+        <Name>$item.courseName</Name>
         #foreach( $file in $course.files)
         <File type="$file.type" format="" size="" src="$file.src" synctime="$file.synctime"></File>
          #end
-      </Item>  
+      </Menu>  
       #end
-    </ItemInfo>
+    </MenuInfo>
   </PackageNode>
 #end
 </PackageInfo>

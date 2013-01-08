@@ -45,7 +45,8 @@ public class RxResponseResolve {
      * @param requestXml
      * @return
      */
-    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip, RequestXml requestXml) {
+    public Map<String, Object> resolve(List<String> responseFile, Map<String, Object> model, String errorTip,
+            RequestXml requestXml) {
         boolean resolveResult = false;
         String sid = null;
         List<IpadRequestInfo> resolveList = new ArrayList<IpadRequestInfo>();
@@ -62,19 +63,26 @@ public class RxResponseResolve {
                 log.error("handle " + t.toString() + " " + method.getName());
                 if ("java.util.List<com.dc.model.IpadRequestInfo>".equals(t.toString())) {
                     resolveList = (List<IpadRequestInfo>) ReflectionUtils.invokeMethod(method, this, responseFile);
-                } else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
+                }
+                else if ("java.util.List<com.dc.model.CourseTab>".equals(t.toString())) {
                     courseTabs = (List<CourseTab>) ReflectionUtils.invokeMethod(method, this);
-                } else if ("java.util.List<com.dc.model.CourseFile>".equals(t.toString())) {
+                }
+                else if ("java.util.List<com.dc.model.CourseFile>".equals(t.toString())) {
                     courseFiles = (List<CourseFile>) ReflectionUtils.invokeMethod(method, this);
-                } else if ("java.util.List<com.dc.model.Course>".equals(t.toString())) {
+                }
+                else if ("java.util.List<com.dc.model.Course>".equals(t.toString())) {
                     courseLists = (List<Course>) ReflectionUtils.invokeMethod(method, this, responseFile);
-                } else if ("java.util.List<com.dc.model.CourseTable>".equals(t.toString())) {
+                }
+                else if ("java.util.List<com.dc.model.CourseTable>".equals(t.toString())) {
                     courseTables = (List<CourseTable>) ReflectionUtils.invokeMethod(method, this);
-                } else if ("java.util.List<com.dc.model.CoursePackage>".equals(t.toString())) {
+                }
+                else if ("java.util.List<com.dc.model.CoursePackage>".equals(t.toString())) {
                     coursePackages = (List<CoursePackage>) ReflectionUtils.invokeMethod(method, this);
-                } else if ("class java.lang.String".equals(t.toString())) {
+                }
+                else if ("class java.lang.String".equals(t.toString())) {
                     sid = (String) ReflectionUtils.invokeMethod(method, this, requestXml.getParamValue("TableId"));
-                } else {
+                }
+                else {
                     resolveResult = (Boolean) ReflectionUtils.invokeMethod(method, this, responseFile);
                 }
                 break;
@@ -90,12 +98,14 @@ public class RxResponseResolve {
         model.put("courseTabSize", courseTabs.size());
         model.put("coursePackages", coursePackages);
         model.put("sid", sid);
-        if (sid == null && !resolveResult && resolveList.size() == 0 && CollectionUtils.isEmpty(coursePackages) && CollectionUtils.isEmpty(courseFiles)
-                && CollectionUtils.isEmpty(courseTabs) && CollectionUtils.isEmpty(courseTables) && courseLists == null) {
+        if (sid == null && !resolveResult && resolveList.size() == 0 && CollectionUtils.isEmpty(coursePackages)
+                && CollectionUtils.isEmpty(courseFiles) && CollectionUtils.isEmpty(courseTabs)
+                && CollectionUtils.isEmpty(courseTables) && courseLists == null) {
             String responesError = getErrInLine(responseFile);
             if (responesError != null && responesError.length() > 0) {
                 model = putErrorMsg(model, responesError);
-            } else {
+            }
+            else {
                 model = putErrorMsg(model, errorTip);
             }
         }
@@ -217,6 +227,10 @@ public class RxResponseResolve {
                 CoursePackageItem c = new CoursePackageItem(m.group(1), m.group(2), m.group(3), m.group(4));
                 List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo());
                 c.setFiles(fileList);
+                Course course = pageService.getCourse(c.getCourseNo());
+                if (course != null) {
+                    c.setCourseName(course.getCourseName());
+                }
                 coursePackageItems.add(c);
             }
         }
@@ -273,7 +287,8 @@ public class RxResponseResolve {
             String responseStr = courseFiles.get(i);
             Matcher m = coursePattern.matcher(responseStr);
             if (m.matches() && (m.groupCount() == 7)) {
-                Course c = new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
+                Course c =
+                        new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
                 List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo());
                 c.setFiles(fileList);
                 courses.add(c);
@@ -370,7 +385,8 @@ public class RxResponseResolve {
                     }
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error("resolveGetOrderList error", e);
         }
         if (courseList.isEmpty()) {
