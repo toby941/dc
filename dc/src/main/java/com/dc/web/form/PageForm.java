@@ -5,61 +5,48 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dc.model.Course;
+import com.dc.model.CoursePackage;
 
 public class PageForm extends AbstractForm {
 
-    private String userName;
-
-    private String password;
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    private Course course;
 
     private List<Course> courses;
 
-    private Course course;
+    private List<CoursePackage> packages;
+
+    public List<CoursePackage> getPackages() {
+        return packages;
+    }
+
+    public void setPackages(List<CoursePackage> packages) {
+        this.packages = packages;
+    }
 
     private String desc;
+
+    private String password;
+
     private MultipartFile photo1;
 
-    public MultipartFile getPhoto1() {
-        return photo1;
-    }
-
-    public void setPhoto1(MultipartFile photo1) {
-        this.photo1 = photo1;
-    }
-
-    public MultipartFile getPhoto2() {
-        return photo2;
-    }
-
-    public void setPhoto2(MultipartFile photo2) {
-        this.photo2 = photo2;
-    }
-
     private MultipartFile photo2;
+
     private MultipartFile photo3;
 
-    public MultipartFile getPhoto3() {
-        return photo3;
+    private String userName;
+
+    @Override
+    public void form2domain() {
+        // TODO Auto-generated method stub
+
     }
 
-    public void setPhoto3(MultipartFile photo3) {
-        this.photo3 = photo3;
+    public Course getCourse() {
+        return course;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
     }
 
     @Override
@@ -67,21 +54,28 @@ public class PageForm extends AbstractForm {
         return desc;
     }
 
-    @Override
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public String getPassword() {
+        return password;
     }
 
-    public Course getCourse() {
-        return course;
+    public MultipartFile getPhoto1() {
+        return photo1;
+    }
+
+    public MultipartFile getPhoto2() {
+        return photo2;
+    }
+
+    public MultipartFile getPhoto3() {
+        return photo3;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     public void setCourse(Course course) {
         this.course = course;
-    }
-
-    public List<Course> getCourses() {
-        return courses;
     }
 
     public void setCourses(List<Course> courses) {
@@ -89,9 +83,28 @@ public class PageForm extends AbstractForm {
     }
 
     @Override
-    public void form2domain() {
-        // TODO Auto-generated method stub
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setPhoto1(MultipartFile photo1) {
+        this.photo1 = photo1;
+    }
+
+    public void setPhoto2(MultipartFile photo2) {
+        this.photo2 = photo2;
+    }
+
+    public void setPhoto3(MultipartFile photo3) {
+        this.photo3 = photo3;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
 }

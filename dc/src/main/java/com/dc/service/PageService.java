@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dc.model.Course;
 import com.dc.model.CourseFile;
+import com.dc.model.CoursePackage;
 import com.dc.model.CourseTab;
 
 @Service
@@ -56,7 +57,8 @@ public class PageService {
         }
         File descFile = new File(descFloderPath + courseNo + ".txt");
         if (descFile.exists()) {
-            CourseFile descCourseFile = new CourseFile("html", getDescHttpSrc(courseNo), String.valueOf(descFile.lastModified()));
+            CourseFile descCourseFile =
+                    new CourseFile("html", getDescHttpSrc(courseNo), String.valueOf(descFile.lastModified()));
             fileList.add(descCourseFile);
         }
         return fileList;
@@ -73,7 +75,8 @@ public class PageService {
         File f = new File(photoFloderPath + courseNo + "/" + index + ".jpg");
         if (f.exists()) {
             return FileUtils.readFileToByteArray(f);
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -89,7 +92,8 @@ public class PageService {
         File f = new File(descFloderPath + courseNo + ".txt");
         if (f.exists()) {
             return FileUtils.readFileToString(f, "UTF-8");
-        } else {
+        }
+        else {
             return StringUtils.EMPTY;
         }
     }
@@ -166,6 +170,18 @@ public class PageService {
         }
         cacheService.saveCourse(courses);
         return courses;
+    }
+
+    /**
+     * 获取套餐列表
+     * 
+     * @return
+     * @throws IOException
+     */
+    public List<CoursePackage> getAllCoursePackage() throws IOException {
+
+        List<CoursePackage> coursePackages = resolve.resolveGetMenuPackageList();
+        return coursePackages;
     }
 
     public String getDescHttpSrc(String courseNo) {

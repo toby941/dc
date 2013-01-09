@@ -10,6 +10,8 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
  * AbstractController.java 所有Controller的抽象类，新建Controller时必须集成该类,提供了一些基本方法
  */
 public abstract class AbstractController extends MultiActionController {
+
+    public static final String DEFAULT_COMMAND = "command";
     private final Logger log = Logger.getLogger(getClass());
 
     public String getUserAgent(HttpServletRequest request) {
