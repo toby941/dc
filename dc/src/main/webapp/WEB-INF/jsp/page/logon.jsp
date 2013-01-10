@@ -44,7 +44,7 @@
 
 	document.onkeypress = keypress;
 	if (this.parent != this) {
-		this.parent.location = "/user/logon";
+		this.parent.location = "/logon";
 	}
 
 

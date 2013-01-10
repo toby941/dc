@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.dc.constants.Constants;
 import com.dc.model.Course;
 import com.dc.model.CoursePackage;
 import com.dc.service.PageService;
@@ -48,8 +49,31 @@ public class CourseController extends AbstractController {
             PageForm form) throws IOException {
         Course course = pageService.getCourse(courseNo);
         form.setCourse(course);
-        form.setDesc(pageService.getDesc(courseNo));
+        form.setDesc(pageService.getDesc(courseNo, Constants.page_type_course));
         return new ModelAndView("page/detail", DEFAULT_COMMAND, form);
+    }
+
+    @RequestMapping(value = "/packageview/{id}", method = RequestMethod.GET)
+    public ModelAndView packageView(@PathVariable String id, HttpServletRequest request, HttpServletResponse response,
+            PageForm form) throws IOException {
+        CoursePackage c = pageService.getPackage(id);
+        form.setCoursePackage(c);
+        form.setDesc(pageService.getDesc(id, Constants.page_type_package));
+        return new ModelAndView("page/package_detail", DEFAULT_COMMAND, form);
+    }
+
+    @RequestMapping(value = "/packageedit/{id}", method = RequestMethod.POST)
+    public ModelAndView packageedit(@PathVariable String id, HttpServletRequest request, HttpServletResponse response,
+            PageForm form) throws IOException {
+        String desc = form.getDesc();
+        if (StringUtils.isNotEmpty(desc)) {
+            pageService.saveDesc(id, desc, Constants.page_type_package);
+        }
+        MultipartFile file = form.getPhoto1();
+        if (file != null) {
+            pageService.savePhoto(file, id, "1", Constants.page_type_package);
+        }
+        return redirect("/packagelist");
     }
 
     @RequestMapping(value = "/edit/{courseNo}", method = RequestMethod.POST)
@@ -57,7 +81,7 @@ public class CourseController extends AbstractController {
             PageForm form) throws IOException {
         String desc = form.getDesc();
         if (StringUtils.isNotEmpty(desc)) {
-            pageService.saveDesc(courseNo, desc);
+            pageService.saveDesc(courseNo, desc, Constants.page_type_course);
         }
         MultipartFile file1 = form.getPhoto1();
         MultipartFile file2 = form.getPhoto2();
@@ -66,10 +90,9 @@ public class CourseController extends AbstractController {
         for (int i = 0; i < files.length; i++) {
             MultipartFile file = files[i];
             if (file != null) {
-                pageService.savePhoto(file, courseNo, String.valueOf((i + 1)));
+                pageService.savePhoto(file, courseNo, String.valueOf(i + 1), Constants.page_type_course);
             }
         }
-
         return redirect("/list");
     }
 }

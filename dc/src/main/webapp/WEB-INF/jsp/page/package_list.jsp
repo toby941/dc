@@ -31,7 +31,7 @@
         <td><c:out value="${p.id}"></c:out> </td>
         <td><c:out value="${p.coursePackageName}"></c:out></td>
         <td>
-        <a href="/view/package/${p.id}">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="/packageview/${p.id}">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
        </td></tr>
        </c:forEach>
 </table>

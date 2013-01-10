@@ -61,4 +61,8 @@ public class Constants {
     public static String REQUEST_GetSyncFileList = "GetSyncFileList";
 
     public static String LOG_NAME = "dc";
+
+    public static String page_type_course = "1";
+    public static String page_type_package = "2";
+
 }

@@ -11,6 +11,16 @@ public class PageForm extends AbstractForm {
 
     private Course course;
 
+    private CoursePackage coursePackage;
+
+    public CoursePackage getCoursePackage() {
+        return coursePackage;
+    }
+
+    public void setCoursePackage(CoursePackage coursePackage) {
+        this.coursePackage = coursePackage;
+    }
+
     private List<Course> courses;
 
     private List<CoursePackage> packages;
