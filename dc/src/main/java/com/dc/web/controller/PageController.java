@@ -5,15 +5,20 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.dc.service.PageService;
 import com.dc.web.form.PageForm;
 
 @Controller
 public class PageController extends AbstractController {
+
+    @Autowired
+    private PageService pageService;
 
     @RequestMapping(value = "/logon", method = RequestMethod.GET)
     public ModelAndView logon(HttpServletRequest request, HttpServletResponse response, PageForm form)
@@ -34,6 +39,7 @@ public class PageController extends AbstractController {
         String password = form.getPassword();
         if ("admin".equals(userName) && "2012".equals(password)) {
             request.getSession().setAttribute("flag", new Boolean(true));
+            request.getSession().setAttribute("host", pageService.getHost());
             return redirect("/user/index");
         }
         else {

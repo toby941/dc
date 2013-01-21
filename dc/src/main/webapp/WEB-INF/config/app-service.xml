@@ -72,6 +72,7 @@
      <bean name="pageService" class="com.dc.service.PageService" >
       <property name="photoFloderPath" value="${photoFloderPath}"></property>
       <property name="descFloderPath" value="${descFloderPath}"></property>
+      <property name="tmpPhotoFloderPath" value="${tmpPhotoFloderPath}"></property>
       <property name="packagePhotoFloderPath" value="${packagePhotoFloderPath}"></property>
       <property name="packageDescFloderPath" value="${packageDescFloderPath}"></property>
       <property name="host" value="${host}"></property>

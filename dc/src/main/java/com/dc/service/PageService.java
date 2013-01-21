@@ -31,6 +31,17 @@ public class PageService {
     private String descFloderPath;
     private String photoFloderPath;
 
+    // 临时文件path
+    private String tmpPhotoFloderPath;
+
+    public String getTmpPhotoFloderPath() {
+        return tmpPhotoFloderPath;
+    }
+
+    public void setTmpPhotoFloderPath(String tmpPhotoFloderPath) {
+        this.tmpPhotoFloderPath = tmpPhotoFloderPath;
+    }
+
     private String packageDescFloderPath;
     private String packagePhotoFloderPath;
 
@@ -193,6 +204,23 @@ public class PageService {
         }
     }
 
+    /**
+     * 获取临时图片流
+     * 
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    public byte[] getTmpPhoto(String id) throws IOException {
+        File f = new File(tmpPhotoFloderPath + id + ".jpg");
+        if (f.exists()) {
+            return FileUtils.readFileToByteArray(f);
+        }
+        else {
+            return null;
+        }
+    }
+
     public String getPhotoFloderPath() {
         return photoFloderPath;
     }
@@ -207,6 +235,22 @@ public class PageService {
         FileUtils.writeStringToFile(f, desc, "UTF-8");
     }
 
+    public String savaTmpPhoto(byte[] content) throws IOException {
+        String photoName = String.valueOf(System.nanoTime());
+        if (content != null && content.length > 0) {
+            File f = new File(tmpPhotoFloderPath + photoName + ".jpg");
+            FileUtils.writeByteArrayToFile(f, content);
+        }
+        return photoName;
+    }
+
+    /**
+     * @param fileToUpload
+     * @param id 对应宿主id
+     * @param index 图片序列号
+     * @param type 图片类型 1-普通菜品 2-套餐
+     * @throws IOException
+     */
     public void savePhoto(MultipartFile fileToUpload, String id, String index, String type) throws IOException {
         String path = getPath(type, false);
 
@@ -215,6 +259,33 @@ public class PageService {
             FileUtils.forceMkdir(floder);
         }
         byte[] content = fileToUpload.getBytes();
+        if (content != null && content.length > 0) {
+            File f = new File(path + id + "/" + index + ".jpg");
+            if (f.exists()) {
+                FileUtils.forceDelete(f);
+            }
+            f = new File(path + id + "/" + index + ".jpg");
+            FileUtils.writeByteArrayToFile(f, content);
+        }
+    }
+
+    /**
+     * 依据临时图片id 保存图片
+     * 
+     * @param tmpid 临时图片id
+     * @param id 宿主id
+     * @param index 序列号
+     * @param type 图片类型 1-普通菜品 2-套餐
+     * @throws IOException
+     */
+    public void savePhotoByTmpPhoto(String tmpid, String id, String index, String type) throws IOException {
+        String path = getPath(type, false);
+
+        File floder = new File(path + id);
+        if (!floder.exists()) {
+            FileUtils.forceMkdir(floder);
+        }
+        byte[] content = getTmpPhoto(tmpid);
         if (content != null && content.length > 0) {
             File f = new File(path + id + "/" + index + ".jpg");
             if (f.exists()) {
@@ -244,4 +315,5 @@ public class PageService {
     public void setResolve(RxResponseResolve resolve) {
         this.resolve = resolve;
     }
+
 }

@@ -63,16 +63,23 @@ public class CourseController extends AbstractController {
     }
 
     @RequestMapping(value = "/packageedit/{id}", method = RequestMethod.POST)
-    public ModelAndView packageedit(@PathVariable String id, HttpServletRequest request, HttpServletResponse response,
+    public ModelAndView packageEdit(@PathVariable String id, HttpServletRequest request, HttpServletResponse response,
             PageForm form) throws IOException {
         String desc = form.getDesc();
         if (StringUtils.isNotEmpty(desc)) {
             pageService.saveDesc(id, desc, Constants.page_type_package);
         }
         MultipartFile file = form.getPhoto1();
-        if (file != null) {
+        if (file != null && file.getBytes() != null && file.getBytes().length > 0) {
             pageService.savePhoto(file, id, "1", Constants.page_type_package);
         }
+        else {
+            String tmpid = form.getTmpid();
+            if (StringUtils.isNotBlank(tmpid)) {
+                pageService.savePhotoByTmpPhoto(tmpid, id, "1", Constants.page_type_package);
+            }
+        }
+
         return redirect("/packagelist");
     }
 

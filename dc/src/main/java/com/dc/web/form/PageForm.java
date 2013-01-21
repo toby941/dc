@@ -33,6 +33,14 @@ public class PageForm extends AbstractForm {
         this.packages = packages;
     }
 
+    public String getTmpid() {
+        return tmpid;
+    }
+
+    public void setTmpid(String tmpid) {
+        this.tmpid = tmpid;
+    }
+
     private String desc;
 
     private String password;
@@ -42,6 +50,11 @@ public class PageForm extends AbstractForm {
     private MultipartFile photo2;
 
     private MultipartFile photo3;
+
+    /**
+     * flash控件上传图片后返回临时图片id
+     */
+    private String tmpid;
 
     private String userName;
 
