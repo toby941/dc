@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
+import com.dc.constants.Constants;
 import com.dc.model.Course;
 import com.dc.model.CourseFile;
 import com.dc.model.CoursePackage;
@@ -225,7 +226,7 @@ public class RxResponseResolve {
             Matcher m = coursePackageItemPattern.matcher(responseStr);
             if (m.matches() && (m.groupCount() == 4)) {
                 CoursePackageItem c = new CoursePackageItem(m.group(1), m.group(2), m.group(3), m.group(4));
-                List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo());
+                List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo(), Constants.page_type_course);
                 c.setFiles(fileList);
                 Course course = pageService.getCourse(c.getCourseNo());
                 if (course != null) {
@@ -240,6 +241,8 @@ public class RxResponseResolve {
             Matcher m = coursePackagePattern.matcher(responseStr);
             if (m.matches() && (m.groupCount() == 2)) {
                 CoursePackage cp = new CoursePackage(m.group(1), m.group(2));
+                List<CourseFile> files = pageService.getFileNode(m.group(1), Constants.page_type_package);
+                cp.setFiles(files);
                 coursePackages.add(cp);
             }
         }
@@ -289,7 +292,7 @@ public class RxResponseResolve {
             if (m.matches() && (m.groupCount() == 7)) {
                 Course c =
                         new Course(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
-                List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo());
+                List<CourseFile> fileList = pageService.getFileNode(c.getCourseNo(), Constants.page_type_course);
                 c.setFiles(fileList);
                 courses.add(c);
             }

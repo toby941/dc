@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
@@ -15,6 +16,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.jdom.Document;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.junit.Test;
 
 public class ApiControllerTest {
@@ -57,23 +61,32 @@ public class ApiControllerTest {
                 "<Request action=\"OrderMenu\" sid=\"{0}\"><Menu id=\"03008\" pqty=\"1\" /><Menu id=\"03002\" pqty=\"1\" /><Menu id=\"05001\" pqty=\"1\" /><Menu id=\"05002\" pqty=\"1\" /><Menu id=\"02003\" pqty=\"1\" /></Request>";
         String orderList = "<Request action=\"GetOrderList\" sid=\"{0}\"/>";
         String loginResult = request(login);
-        String sid = loginResult.substring(loginResult.indexOf("<SessionId>") + 11, loginResult.indexOf("</SessionId>"));
+        String sid =
+                loginResult.substring(loginResult.indexOf("<SessionId>") + 11, loginResult.indexOf("</SessionId>"));
         System.out.println("sid: " + sid);
         request(MessageFormat.format(openTable, sid));
         // request(MessageFormat.format(orderMenu, sid));
         // request(MessageFormat.format(orderList, sid));
     }
 
+    public String getSid() throws ParseException, IOException, JDOMException {
+        String loginResult = request(loginCommand);
+        Document doc = new SAXBuilder().build(IOUtils.toInputStream(loginResult));
+        return doc.getRootElement().getChild("SessionId").getValue();
+
+    }
+    private final String loginCommand =
+            "<Request action=\"Login\"><Param name=\"Username\">002</Param><Param name=\"Password\">123123</Param><Param name=\"MacAddr\"></Param></Request>";
+
     // @Test
-    public void testLogin() throws ClientProtocolException, IOException {
-        String xml =
-                "<Request action=\"Login\"><Param name=\"Username\">002</Param><Param name=\"Password\">123123</Param><Param name=\"MacAddr\"></Param></Request>";
-        request(xml);
+    public void testLogin() throws ClientProtocolException, IOException, ParseException, JDOMException {
+        request(loginCommand);
     }
 
     // @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml = "<Request action=\"OpenTable\" sid=\"1357228873132371000\"><Param name=\"TableId\">003</Param></Request>";
+        String xml =
+                "<Request action=\"OpenTable\" sid=\"1357228873132371000\"><Param name=\"TableId\">003</Param></Request>";
         request(xml);
     }
 
@@ -90,8 +103,9 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void testGetMenuPackageList() throws ParseException, IOException {
-        String xml = "<Request action=\"GetMenuPackageList\" sid=\"1357228873132371000\"/>";
+    public void testGetMenuPackageList() throws ParseException, IOException, JDOMException {
+        String sid = getSid();
+        String xml = "<Request action=\"GetMenuPackageList\" sid=\"" + sid + "\"/>";
         request(xml);
     }
 
@@ -116,7 +130,8 @@ public class ApiControllerTest {
 
     // @Test
     public void SwitchTable() throws ParseException, IOException {
-        String xml = "<Request action=\"SwitchTable\" sid=\"1356100768933652000\"><Param name=\"TableId\">001</Param></Request>";
+        String xml =
+                "<Request action=\"SwitchTable\" sid=\"1356100768933652000\"><Param name=\"TableId\">001</Param></Request>";
         request(xml);
     }
 

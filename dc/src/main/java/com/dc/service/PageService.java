@@ -21,10 +21,6 @@ import com.dc.model.CourseTab;
 @Service
 public class PageService {
 
-    private static String desc_http_templete = "/desc/{0}.html";
-
-    private static String photo_templete = "/photo/{0}/{1}";
-
     @Autowired
     private CacheService cacheService;
 
@@ -156,27 +152,47 @@ public class PageService {
         return descFloderPath;
     }
 
-    public String getDescHttpSrc(String courseNo) {
-        return MessageFormat.format(desc_http_templete, courseNo);
-    }
+    private static String desc_course_http_templete = "/desc/{0}.html";
+    private static String photo_course_templete = "/photo/{0}/{1}";
 
-    public List<CourseFile> getFileNode(String courseNo) throws IOException {
-        File folder = new File(photoFloderPath + courseNo);
+    private static String desc_package_http_templete = "/packagedesc/{0}.html";
+    private static String photo_package_templete = "/packagephoto/{0}/{1}";
+
+    public List<CourseFile> getFileNode(String courseNo, String type) throws IOException {
+        String photoPath = null;
+        String descPath = null;
+        String photoTemplete = null;
+        String descTemplete = null;
+        if (Constants.page_type_course.equals(type)) {
+            photoPath = photoFloderPath;
+            descPath = descFloderPath;
+            photoTemplete = photo_course_templete;
+            descTemplete = desc_course_http_templete;
+        }
+        else {
+            photoPath = packagePhotoFloderPath;
+            descPath = packageDescFloderPath;
+            photoTemplete = photo_package_templete;
+            descTemplete = desc_package_http_templete;
+        }
+
+        File folder = new File(photoPath + courseNo);
         List<CourseFile> fileList = new ArrayList<CourseFile>();
         if (folder.exists() && folder.list().length > 0) {
             File[] photoFiles = folder.listFiles();
             for (File f : photoFiles) {
                 String name = f.getName();
                 String time = String.valueOf(f.lastModified());
-                String src = MessageFormat.format(photo_templete, courseNo, name);
+                String src = MessageFormat.format(photoTemplete, courseNo, name);
                 CourseFile file = new CourseFile("jpg", src, time);
                 fileList.add(file);
             }
         }
-        File descFile = new File(descFloderPath + courseNo + ".txt");
+        File descFile = new File(descPath + courseNo + ".txt");
         if (descFile.exists()) {
-            CourseFile descCourseFile =
-                    new CourseFile("html", getDescHttpSrc(courseNo), String.valueOf(descFile.lastModified()));
+            String time = String.valueOf(descFile.lastModified());
+            String src = MessageFormat.format(descTemplete, courseNo);
+            CourseFile descCourseFile = new CourseFile("html", src, time);
             fileList.add(descCourseFile);
         }
         return fileList;

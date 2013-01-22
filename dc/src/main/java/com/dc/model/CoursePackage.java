@@ -12,6 +12,16 @@ import org.apache.commons.lang.StringUtils;
 public class CoursePackage {
     private String id;
     private String coursePackageName;
+
+    public List<CourseFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<CourseFile> files) {
+        this.files = files;
+    }
+
+    private List<CourseFile> files;
     private List<CoursePackageItem> coursePackageItems;
 
     public CoursePackage() {
