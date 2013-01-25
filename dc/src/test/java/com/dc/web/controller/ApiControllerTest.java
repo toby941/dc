@@ -26,9 +26,10 @@ public class ApiControllerTest {
     // private static String host = "http://192.168.1.13:9091";
 
     // private static String host = "http://zhaduir.vicp.cc:8092";
-    // private static String host = "http://517ps.eicp.net:8092";
 
-    private static String host = "http://127.0.0.1:9091";
+    private static String host = "http://517ps.eicp.net:8092";
+
+    // private static String host = "http://127.0.0.1:9091";
 
     public String request(String xml) throws ParseException, IOException {
         HttpClient httpclient = new DefaultHttpClient();
@@ -61,8 +62,7 @@ public class ApiControllerTest {
                 "<Request action=\"OrderMenu\" sid=\"{0}\"><Menu id=\"03008\" pqty=\"1\" /><Menu id=\"03002\" pqty=\"1\" /><Menu id=\"05001\" pqty=\"1\" /><Menu id=\"05002\" pqty=\"1\" /><Menu id=\"02003\" pqty=\"1\" /></Request>";
         String orderList = "<Request action=\"GetOrderList\" sid=\"{0}\"/>";
         String loginResult = request(login);
-        String sid =
-                loginResult.substring(loginResult.indexOf("<SessionId>") + 11, loginResult.indexOf("</SessionId>"));
+        String sid = loginResult.substring(loginResult.indexOf("<SessionId>") + 11, loginResult.indexOf("</SessionId>"));
         System.out.println("sid: " + sid);
         request(MessageFormat.format(openTable, sid));
         // request(MessageFormat.format(orderMenu, sid));
@@ -85,8 +85,7 @@ public class ApiControllerTest {
 
     // @Test
     public void testOpenTable() throws ParseException, IOException {
-        String xml =
-                "<Request action=\"OpenTable\" sid=\"1357228873132371000\"><Param name=\"TableId\">003</Param></Request>";
+        String xml = "<Request action=\"OpenTable\" sid=\"1357228873132371000\"><Param name=\"TableId\">003</Param></Request>";
         request(xml);
     }
 
@@ -102,14 +101,14 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    @Test
+    // @Test
     public void testGetMenuPackageList() throws ParseException, IOException, JDOMException {
         String sid = getSid();
         String xml = "<Request action=\"GetMenuPackageList\" sid=\"" + sid + "\"/>";
         request(xml);
     }
 
-    // @Test
+    @Test
     public void testGetSyncFileList() throws ParseException, IOException {
         String xml = "<Request action=\"GetSyncFileList\" sid=\"\"/>";
         request(xml);
@@ -130,8 +129,7 @@ public class ApiControllerTest {
 
     // @Test
     public void SwitchTable() throws ParseException, IOException {
-        String xml =
-                "<Request action=\"SwitchTable\" sid=\"1356100768933652000\"><Param name=\"TableId\">001</Param></Request>";
+        String xml = "<Request action=\"SwitchTable\" sid=\"1356100768933652000\"><Param name=\"TableId\">001</Param></Request>";
         request(xml);
     }
 

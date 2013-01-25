@@ -1,5 +1,5 @@
 <SyncListInfo size="$courseFiles.size()" error="">
 #foreach( $file in $courseFiles)
-<File type="$file.type" format="" size="" src="$file.src" synctime="$file.synctime"></File>
+<File type="$file.type" format="" size="" src="$file.src" synctime="$file.synctime" setid="$!file.setid"></File>
 #end
 </SyncListInfo>

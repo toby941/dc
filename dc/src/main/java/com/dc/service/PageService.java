@@ -114,16 +114,13 @@ public class PageService {
         if (Constants.page_type_course.equals(type)) {
             if (isDesc) {
                 return descFloderPath;
-            }
-            else {
+            } else {
                 return photoFloderPath;
             }
-        }
-        else if (Constants.page_type_package.equals(type)) {
+        } else if (Constants.page_type_package.equals(type)) {
             if (isDesc) {
                 return packageDescFloderPath;
-            }
-            else {
+            } else {
                 return packagePhotoFloderPath;
             }
         }
@@ -142,8 +139,7 @@ public class PageService {
         File f = new File(descPath + id + ".txt");
         if (f.exists()) {
             return FileUtils.readFileToString(f, "UTF-8");
-        }
-        else {
+        } else {
             return StringUtils.EMPTY;
         }
     }
@@ -168,8 +164,7 @@ public class PageService {
             descPath = descFloderPath;
             photoTemplete = photo_course_templete;
             descTemplete = desc_course_http_templete;
-        }
-        else {
+        } else {
             photoPath = packagePhotoFloderPath;
             descPath = packageDescFloderPath;
             photoTemplete = photo_package_templete;
@@ -195,6 +190,12 @@ public class PageService {
             CourseFile descCourseFile = new CourseFile("html", src, time);
             fileList.add(descCourseFile);
         }
+
+        if (Constants.page_type_package.equals(type)) {
+            for (CourseFile f : fileList) {
+                f.setSetid(courseNo);
+            }
+        }
         return fileList;
     }
 
@@ -214,8 +215,7 @@ public class PageService {
         File f = new File(path + id + "/" + index + ".jpg");
         if (f.exists()) {
             return FileUtils.readFileToByteArray(f);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -231,8 +231,7 @@ public class PageService {
         File f = new File(tmpPhotoFloderPath + id + ".jpg");
         if (f.exists()) {
             return FileUtils.readFileToByteArray(f);
-        }
-        else {
+        } else {
             return null;
         }
     }

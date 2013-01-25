@@ -16,6 +16,15 @@ public class CourseFile {
     private String type;
     private String src;
     private String synctime;
+    private String setid;
+
+    public String getSetid() {
+        return setid;
+    }
+
+    public void setSetid(String setid) {
+        this.setid = setid;
+    }
 
     public String getType() {
         return type;
