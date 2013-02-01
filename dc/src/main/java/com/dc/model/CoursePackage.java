@@ -2,6 +2,7 @@ package com.dc.model;
 
 import java.util.List;
 
+import org.apache.commons.lang.NumberUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -40,6 +41,19 @@ public class CoursePackage {
         super();
         this.id = id;
         this.coursePackageName = name;
+    }
+
+    public String getSumCost() {
+        Double sumCost = 0.0;
+        for (CoursePackageItem item : coursePackageItems) {
+            String price = item.getCoursePrice();
+            String count = item.getCourseCount();
+            if (NumberUtils.isNumber(price) && NumberUtils.isDigits(count)) {
+                Double cost = Double.parseDouble(price) * Integer.parseInt(count);
+                sumCost += cost;
+            }
+        }
+        return String.valueOf(sumCost);
     }
 
     public String getId() {

@@ -27,16 +27,29 @@ public class RequestXml {
         protected String name;
         protected String tableId;
         protected String time;
+        /**
+         * 套餐号
+         */
+        protected String setid;
 
         public Menu() {
             super();
         }
 
-        public Menu(String id, String count) {
+        public Menu(String id, String count, String setid) {
             super();
             this.id = id;
             this.count = count;
+            this.setid = setid;
             this.time = DateFormatUtils.format(Calendar.getInstance(), "HH:mm:ss");
+        }
+
+        public String getSetid() {
+            return setid;
+        }
+
+        public void setSetid(String setid) {
+            this.setid = setid;
         }
 
         public String getCount() {
@@ -81,8 +94,9 @@ public class RequestXml {
 
         @Override
         public String toString() {
-            return "Menu [tableId=" + tableId + ", id=" + id + ", count=" + count + ", name=" + name + ", time=" + time + "]";
+            return "Menu [count=" + count + ", id=" + id + ", name=" + name + ", tableId=" + tableId + ", time=" + time + ", setid=" + setid + "]";
         }
+
     }
 
     public class Param {
@@ -186,7 +200,8 @@ public class RequestXml {
         for (Element e : menuList) {
             String id = e.getAttributeValue("id");
             String count = e.getAttributeValue("pqty");
-            Menu m = new Menu(id, count);
+            String setid = e.getAttributeValue("setid");
+            Menu m = new Menu(id, count, setid);
             menus.add(m);
         }
     }

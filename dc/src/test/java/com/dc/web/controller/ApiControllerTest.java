@@ -101,14 +101,14 @@ public class ApiControllerTest {
         request(xml);
     }
 
-    // @Test
+    @Test
     public void testGetMenuPackageList() throws ParseException, IOException, JDOMException {
         String sid = getSid();
         String xml = "<Request action=\"GetMenuPackageList\" sid=\"" + sid + "\"/>";
         request(xml);
     }
 
-    @Test
+    // @Test
     public void testGetSyncFileList() throws ParseException, IOException {
         String xml = "<Request action=\"GetSyncFileList\" sid=\"\"/>";
         request(xml);

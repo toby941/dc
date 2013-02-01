@@ -148,10 +148,10 @@ public class PageService {
         return descFloderPath;
     }
 
-    private static String desc_course_http_templete = "/desc/{0}.html";
+    private static String desc_course_http_templete = "/desc/{0}.htm";
     private static String photo_course_templete = "/photo/{0}/{1}";
 
-    private static String desc_package_http_templete = "/packagedesc/{0}.html";
+    private static String desc_package_http_templete = "/packagedesc/{0}.htm";
     private static String photo_package_templete = "/packagephoto/{0}/{1}";
 
     public List<CourseFile> getFileNode(String courseNo, String type) throws IOException {
@@ -176,11 +176,13 @@ public class PageService {
         if (folder.exists() && folder.list().length > 0) {
             File[] photoFiles = folder.listFiles();
             for (File f : photoFiles) {
-                String name = f.getName();
-                String time = String.valueOf(f.lastModified());
-                String src = MessageFormat.format(photoTemplete, courseNo, name);
-                CourseFile file = new CourseFile("jpg", src, time);
-                fileList.add(file);
+                if (f.getName().toLowerCase().endsWith("jpg")) {
+                    String name = f.getName();
+                    String time = String.valueOf(f.lastModified());
+                    String src = MessageFormat.format(photoTemplete, courseNo, name);
+                    CourseFile file = new CourseFile("jpg", src, time);
+                    fileList.add(file);
+                }
             }
         }
         File descFile = new File(descPath + courseNo + ".txt");

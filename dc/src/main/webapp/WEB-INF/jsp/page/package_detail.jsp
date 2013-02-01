@@ -17,6 +17,8 @@ div{text-align:center;}
 <script type="text/javascript" src="/js/jquery-ui.js"></script>
 <script src="/js/plugins/chosen.jquery.js" type="text/javascript"></script>
 <script src="http://open.web.meitu.com/sources/xiuxiu.js" type="text/javascript"></script>
+<script type="text/javascript" charset="utf-8" src="/ue/editor_config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/ue/editor_all.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>套餐详细</title>
 </head>
@@ -30,7 +32,12 @@ div{text-align:center;}
     </tr>
     <tr>
       <td align="right">套餐描述:</td>
-      <td><form:textarea path="desc" cols="60" rows="6" /> </td>
+      <td>
+     <!--  <form:textarea path="desc" cols="60" rows="6" />  -->
+      <div>
+    <script  id="editor" type="text/plain" name="desc">${command.desc}</script>
+    </div>
+      </td>
     </tr>
      <tr>
       <td align="right">预览 </td>
@@ -93,6 +100,15 @@ div{text-align:center;}
 		});
 	  }
   });
+</script>
+<script type="text/javascript">
+window.UEDITOR_HOME_URL = "/ue/";
+    //实例化编辑器
+    var ue = UE.getEditor('editor');
+
+    ue.addListener('ready',function(){
+        this.focus()
+    });
 </script>
 </body>
 </html>

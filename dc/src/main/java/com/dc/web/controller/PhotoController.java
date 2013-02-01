@@ -33,8 +33,8 @@ public class PhotoController extends AbstractController {
      * @throws IOException
      */
     @RequestMapping(value = "/photo/{courseNo}/{index}.jpg", method = RequestMethod.GET)
-    public void requestPhoto(@PathVariable String courseNo, @PathVariable String index, HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+    public void requestPhoto(@PathVariable String courseNo, @PathVariable String index, HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         String imagePath = request.getSession().getServletContext().getRealPath("/image/no_image.gif");
         byte[] photo = pageService.getPhoto(courseNo, index, Constants.page_type_course);
@@ -59,8 +59,8 @@ public class PhotoController extends AbstractController {
      * @throws IOException
      */
     @RequestMapping(value = "/packagephoto/{id}/{index}.jpg", method = RequestMethod.GET)
-    public void requestPackagePhoto(@PathVariable String id, @PathVariable String index, HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+    public void requestPackagePhoto(@PathVariable String id, @PathVariable String index, HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
         String imagePath = request.getSession().getServletContext().getRealPath("/image/no_image.gif");
         byte[] photo = pageService.getPhoto(id, index, Constants.page_type_package);
         if (photo == null) {
@@ -83,8 +83,7 @@ public class PhotoController extends AbstractController {
      * @throws IOException
      */
     @RequestMapping(value = "/tmpphoto/{id}.jpg", method = RequestMethod.GET)
-    public void requestTmpPhoto(@PathVariable String id, HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+    public void requestTmpPhoto(@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String imagePath = request.getSession().getServletContext().getRealPath("/image/no_image.gif");
         byte[] photo = pageService.getTmpPhoto(id);
         if (photo == null) {
@@ -105,9 +104,8 @@ public class PhotoController extends AbstractController {
         response.getWriter().print(name);
     }
 
-    @RequestMapping(value = "/packagedesc/{id}.html", method = RequestMethod.GET)
-    public void requestPackageDesc(@PathVariable String courseNo, HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/packagedesc/{id}.htm", method = RequestMethod.GET)
+    public void requestPackageDesc(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String desc = pageService.getDesc(courseNo, Constants.page_type_package);
         response.setContentType("text/html");
         javax.servlet.ServletOutputStream sout = response.getOutputStream();
@@ -115,9 +113,8 @@ public class PhotoController extends AbstractController {
         sout.flush();
     }
 
-    @RequestMapping(value = "/desc/{courseNo}.html", method = RequestMethod.GET)
-    public void requestPhoto(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+    @RequestMapping(value = "/desc/{courseNo}.htm", method = RequestMethod.GET)
+    public void requestPhoto(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String desc = pageService.getDesc(courseNo, Constants.page_type_course);
         response.setContentType("text/html");
         javax.servlet.ServletOutputStream sout = response.getOutputStream();
