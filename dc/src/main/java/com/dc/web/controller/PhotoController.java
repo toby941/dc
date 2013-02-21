@@ -105,20 +105,24 @@ public class PhotoController extends AbstractController {
     }
 
     @RequestMapping(value = "/packagedesc/{id}.htm", method = RequestMethod.GET)
-    public void requestPackageDesc(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String desc = pageService.getDesc(courseNo, Constants.page_type_package);
-        response.setContentType("text/html");
+    public void requestPackageDesc(@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String desc = pageService.getDesc(id, Constants.page_type_package);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/html;charset=UTF-8");
+
+        System.out.println(desc);
         javax.servlet.ServletOutputStream sout = response.getOutputStream();
-        sout.write(desc.getBytes());
+        sout.write(desc.getBytes("UTF-8"));
         sout.flush();
     }
 
     @RequestMapping(value = "/desc/{courseNo}.htm", method = RequestMethod.GET)
     public void requestPhoto(@PathVariable String courseNo, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String desc = pageService.getDesc(courseNo, Constants.page_type_course);
-        response.setContentType("text/html");
+        response.setContentType("text/html;charset=utf-8");
+        response.setCharacterEncoding("utf-8");
         javax.servlet.ServletOutputStream sout = response.getOutputStream();
-        sout.write(desc.getBytes());
+        sout.write(desc.getBytes("UTF-8"));
         sout.flush();
     }
 }
